@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FullFeedback
 
 class ViewController: UIViewController {
 
@@ -20,5 +21,12 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    @IBAction func feedbackBtnAct(_ sender: Any) {
+        
+        guard let feedbackvc = FeedbackHelper.getFeedbackViewController() else {
+            return
+        }
+        self.present(feedbackvc, animated: true, completion: nil)
+    }
 }
 

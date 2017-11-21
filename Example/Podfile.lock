@@ -1,0 +1,16 @@
+PODS:
+  - FullFeedback (0.1.0)
+
+DEPENDENCIES:
+  - FullFeedback (from `../`)
+
+EXTERNAL SOURCES:
+  FullFeedback:
+    :path: ../
+
+SPEC CHECKSUMS:
+  FullFeedback: dac908af2f23ba35d6c9bab899ceab55a28149d8
+
+PODFILE CHECKSUM: 8aaa242b150b1844404b69b89a418f5625df86fd
+
+COCOAPODS: 1.3.1

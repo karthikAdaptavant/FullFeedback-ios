@@ -41,11 +41,11 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
 		78B85538C35AC607232DA387 /* Pods-FullFeedback_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FullFeedback_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-FullFeedback_Tests/Pods-FullFeedback_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		90DC32FAFC439A923A4B7B98 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		90DC32FAFC439A923A4B7B98 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		A81A4918CE467BD62DE511F1 /* Pods-FullFeedback_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FullFeedback_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FullFeedback_Example/Pods-FullFeedback_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		ABCEB28DED5C932E059C11CE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		ABCEB28DED5C932E059C11CE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		D66FFBD1C90D3F915D47A471 /* Pods-FullFeedback_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FullFeedback_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FullFeedback_Tests/Pods-FullFeedback_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		E8058771F408DB8BA4D55AAD /* FullFeedback.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = FullFeedback.podspec; path = ../FullFeedback.podspec; sourceTree = "<group>"; };
+		E8058771F408DB8BA4D55AAD /* FullFeedback.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = FullFeedback.podspec; path = ../FullFeedback.podspec; sourceTree = "<group>"; };
 		FB1F87FC7E7C12CE20FABF49 /* Pods_FullFeedback_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FullFeedback_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
