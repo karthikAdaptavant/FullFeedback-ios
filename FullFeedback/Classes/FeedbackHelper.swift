@@ -10,13 +10,9 @@ import Alamofire
 
 open class FeedbackHelper {
     
-    public init() {
-        
-    }
+    public init() { }
     
-    static var loopKey = String()
-    
-    public static func getFeedbackViewController(loopToDoKey key: String) -> FeedbackViewController? {
+    open func getFeedbackViewController(loopToDoKey key: String, params: Parameters) -> FeedbackViewController? {
         
         guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
             print("bundle not found")
@@ -30,43 +26,67 @@ open class FeedbackHelper {
             return nil
         }
         
-        loopKey = key
         feedbackVc.loopToDoKey = key
+        feedbackVc.params = params
         
         return feedbackVc
     }
     
-    public static func constructLoopToDoURL(feedbackText text: String) {
+    public func postFeedback(withParam param: [String: Any], completion: ((_ success: Bool) -> ())?) {
         
-        guard let url = URL(string: "http://my.loopto.do/forms/process/?json=true&t=\(Int64(Date().timeIntervalSince1970)*Int64(1000))") else {
-            return
-        }
-    
-        let params: [String: String] = getFeedbackDictionary(feedbackText: text)
-        let headers = [ "Content-Type": "application/x-www-form-urlencoded" ]
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = "POST"
-        urlRequest.allHTTPHeaderFields = headers
-        urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: params, options: [])
-        let session = URLSession.shared
+        let url = try! "http://my.loopto.do".asURL()
+        var urlRequest = URLRequest(url: url.appendingPathComponent("/forms/process"))
+        let queryParameters:[String: Any] = ["json": true, "t": Int64(Date().timeIntervalSince1970 * 1000)]
+        urlRequest = try! URLEncoding.queryString.encode(urlRequest, with: queryParameters)
+        urlRequest = try! URLEncoding.default.encode(urlRequest, with: param)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
         
-        let task = session.dataTask(with: urlRequest) { data, response, error in
-        if let responseData = data {
-            do {
-                let jsonSerialized = try JSONSerialization.jsonObject(with: responseData, options: []) as? [String: Any]
-            }  catch let error as NSError {
-                print(error.localizedDescription)
+        _ = Alamofire.request(urlRequest).responseData { response in
+            
+            switch response.result {
+                
+            case .failure(_):
+                completion?(false)
+            case .success(_):
+                completion?(true)
+                
             }
-        } else if let error = error {
-            print(error.localizedDescription)
         }
-        }
-        task.resume()
     }
     
-   public static func getFeedbackDictionary(feedbackText text: String) -> [String: String] {
-    return ["loopKey": loopKey, "text": text]
+    open func getParam(forLoopKey loopkey: String, text: String, params: [String: Any]) -> [String: Any] {
+        
+        var constructedStr: String = "\(text)"
+        
+        if let appInfo = params["ApplicationInfo"] as? [String: Any] {
+            
+            if let login = appInfo["login"] as? String {
+                constructedStr += "<br><br>------------- User Info -------------<br>User email: \(login)"
+            }
+            
+            if let version = appInfo["version"]  as? Int {
+                constructedStr += "<br><br>------------- Application Info -------------<br>Application version: \(version)"
+            }
+        }
+        
+        if let deviceInfo = params["DeviceInfo"] as? [String: Any] {
+            
+            if let name = deviceInfo["DeviceName"] as? String {
+                constructedStr += "<br><br>------------- Device Info -------------<br>Device Name: \(name)"
+            }
+            
+            if let type = deviceInfo["DeviceType"] as? String {
+                constructedStr += "<br>Device Model: \(type)"
+            }
+            
+            if let osVersion = deviceInfo["DeviceOsVersion"] {
+                constructedStr += "<br>DeviceOs Version: \(osVersion)"
+            }
+            
+        }
+        
+        let param: [String: Any] =  ["user_tag": "", "tag": "feedBack", "loopKey": loopkey, "user_email": "", "card_title": "IOS FullFeedback","card_desc": constructedStr]
+        
+        return param
     }
-    
 }
-

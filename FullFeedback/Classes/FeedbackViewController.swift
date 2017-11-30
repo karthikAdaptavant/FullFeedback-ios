@@ -8,7 +8,8 @@ import UIKit
 
 open class FeedbackViewController: UIViewController {
     
-    var loopToDoKey = String()
+    var loopToDoKey: String = ""
+    var params: [String : Any] = [:]
 
     @IBOutlet weak var textField: UITextField!
     
@@ -24,7 +25,24 @@ open class FeedbackViewController: UIViewController {
     }
     
     @IBAction func button(_ sender: UIButton) {
-        FeedbackHelper.constructLoopToDoURL(feedbackText: textField.text!)
+        
+        self.postFeedback(forText: textField.text!)
     }
     
+    func postFeedback(forText text: String) {
+
+        // show loader
+        let param = FeedbackHelper().getParam(forLoopKey: loopToDoKey, text: text, params: params)
+        FeedbackHelper().postFeedback(withParam: param ) { (success) in
+
+            guard success else {
+                //show alert
+                return
+            }
+
+            // show success message
+
+            // dimiss the view
+        }
+    }
 }
