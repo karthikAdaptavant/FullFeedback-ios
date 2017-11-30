@@ -7,7 +7,11 @@
 import UIKit
 
 open class FeedbackViewController: UIViewController {
+    
+    var loopToDoKey = String()
 
+    @IBOutlet weak var textField: UITextField!
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
 
@@ -18,4 +22,9 @@ open class FeedbackViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func button(_ sender: UIButton) {
+        FeedbackHelper.constructLoopToDoURL(feedbackText: textField.text!)
+    }
+    
 }
