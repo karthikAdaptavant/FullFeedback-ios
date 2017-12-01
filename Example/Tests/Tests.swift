@@ -1,6 +1,6 @@
 import UIKit
 import XCTest
-import FullFeedback
+//import FullFeedback
 
 class Tests: XCTestCase {
     

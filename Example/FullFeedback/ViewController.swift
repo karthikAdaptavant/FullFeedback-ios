@@ -8,6 +8,7 @@
 
 import UIKit
 import FullFeedback
+import Alamofire
 
 class ViewController: UIViewController {
 
@@ -23,9 +24,15 @@ class ViewController: UIViewController {
 
     @IBAction func feedbackBtnAct(_ sender: Any) {
         
-        guard let feedbackvc = FeedbackHelper.getFeedbackViewController() else {
+        let params = ["ApplicationInfo": ["version": 1, "login": "vamsi"],
+                      "DeviceInfo": ["DeviceName": "mymobile", "DeviceOsVersion": 11.2]]
+        
+        let obj = FeedbackHelper()
+
+        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBiamNCgw", params: params) else {
             return
         }
+        
         self.present(feedbackvc, animated: true, completion: nil)
     }
 }

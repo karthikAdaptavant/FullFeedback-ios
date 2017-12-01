@@ -2,10 +2,5 @@ use_frameworks!
 
 target 'FullFeedback_Example' do
   pod 'FullFeedback', :path => '../'
-
-  target 'FullFeedback_Tests' do
-    inherit! :search_paths
-
-    
-  end
+  
 end
