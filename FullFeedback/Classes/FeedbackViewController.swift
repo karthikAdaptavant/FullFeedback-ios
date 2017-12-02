@@ -4,9 +4,9 @@
 //
 //  Created by Karthik on 11/22/17.
 //
+
 import UIKit
 import MBProgressHUD
-
 open class FeedbackViewController: UIViewController, UITextViewDelegate {
     
     var loopToDoKey: String = ""
@@ -22,12 +22,11 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate {
     
     override open func viewDidLoad() {
         super.viewDidLoad()
-        alertHud = self.getAlertHUD(srcView: self.view)
+        alertHud =  self.getAlertHUD(srcView: self.view)
         feedbackText.delegate = self
         feedbackText.becomeFirstResponder()
-        
     }
-
+    
     override open func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -69,45 +68,21 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate {
         FeedbackHelper().postFeedback(withParam: param ) { (success) in
             
             guard success else {
-                //show alert
+                self.alertHud.showText(msg: "Something went wrong!", detailMsg: "Please ", delay: 1.9)
                 return
             }
-            self.alertHud.hide(animated: true)
             
-            // show success message
+            self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
             
-            let hud = self.getAlertHUD(srcView: self.view)
-            hud.show(animated: true)
-            hud.mode = .text
-            hud.label.text = "Feedback Posted Successfully "
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                 self.feedbackText.resignFirstResponder()
                 dismissFeedbackvc()
             })
             
         }
         
-    func dismissFeedbackvc() {
+        func dismissFeedbackvc() {
             self.dismiss(animated: true, completion: nil)
-            
         }
-    }
-}
-
-extension UIViewController {
-    
-    public func getAlertHUD(srcView: UIView) -> MBProgressHUD {
-        
-        let hud = MBProgressHUD(view: srcView)
-        
-        //Force Unwrapping - assuming hud will not be nil
-        srcView.addSubview(hud)
-        hud.color = UIColor(red: 53, green: 63, blue: 77, alpha: 1)
-        hud.bezelView.backgroundColor = .black
-        hud.contentColor = .white
-        hud.label.textColor = .white
-        return hud
-        
     }
 }
