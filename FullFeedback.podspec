@@ -16,6 +16,6 @@ Pod::Spec.new do |s|
   s.dependency 'MBProgressHUD'
 
   s.resource_bundles = {
-     'FullFeedback' => ['Pod/Classes/**/*.{storyboard,png}']
+     'FullFeedback' => ['FullFeedback/Classes/*.{storyboard}']
 }
 end
