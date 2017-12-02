@@ -12,7 +12,7 @@ open class FeedbackHelper {
     
     public init() { }
     
-    open func getFeedbackViewController(loopToDoKey key: String, params: Parameters) -> FeedbackViewController? {
+    open func getFeedbackViewController(loopToDoKey key: String) -> FeedbackViewController? {
         
         guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
             print("bundle not found")
@@ -27,7 +27,6 @@ open class FeedbackHelper {
         }
         
         feedbackVc.loopToDoKey = key
-        feedbackVc.params = params
         
         return feedbackVc
     }

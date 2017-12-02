@@ -29,11 +29,14 @@ class ViewController: UIViewController {
         
         let obj = FeedbackHelper()
 
-        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBiamNCgw", params: params) else {
+        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBiamNCgw") else {
             return
         }
         
+        feedbackvc.params = params
         self.present(feedbackvc, animated: true, completion: nil)
+    
+
     }
 }
 

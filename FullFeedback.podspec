@@ -13,6 +13,7 @@ Pod::Spec.new do |s|
 
   s.source_files = 'FullFeedback/Classes/**/*'
   s.dependency 'Alamofire', '~> 4.5'
+  s.dependency 'MBProgressHUD'
 
   s.resource_bundles = {
      'FullFeedback' => ['Pod/Classes/**/*.{storyboard,png}']
