@@ -29,24 +29,23 @@ import FullFeedback
             return
         }
         
-        params should be in the form of {
-        "applicationInfo": {
-                "login": "optional",
-                "version": 10
-        },
-        "DeviceInfo": {
-                "deviceName": "User's device",
-                "deviceModel": "Your device model",
-                "Device Os version": 11.2
+        Parameter structure should be:  
+        
+          {
+          "applicationInfo": {
+            "login": "optional",
+            "version": 10
+          },
+          "DeviceInfo": {
+            "deviceName": "User's device",
+            "deviceModel": "Your device model",
+            "Device Os version": 11.2
+          }
         }
-        }
-
-example :   let params = ["ApplicationInfo": ["version": 1, "login": "vamsi"],
-                      "DeviceInfo": ["DeviceName": "mymobile", "DeviceOsVersion": 11.2]]
                               
 ## Author
 
-karthikAdaptavant, karthik.samy@a-cti.com
+Vamsi Vekata, venkata.vamsi@full.co
 
 ## License
 
