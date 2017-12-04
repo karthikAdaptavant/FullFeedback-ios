@@ -4,18 +4,24 @@ Pod::Spec.new do |s|
   s.version          = '0.1.0'
   s.summary          = 'Full feedback is a framwork which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
-  s.homepage         = 'https://github.com/karthikAdaptavant/FullFeedback'
+  s.homepage         = 'https://github.com/karthikAdaptavant/FullFeedback-ios.git'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'karthikAdaptavant' => 'karthik.samy@a-cti.com' }
-  s.source           = { :git => 'https://github.com/karthikAdaptavant/FullFeedback.git', :tag => s.version.to_s }
 
-  s.ios.deployment_target = '10.0'
+  s.source           = { :git => 'https://github.com/karthikAdaptavant/FullFeedback-ios.git', :tag => s.version.to_s }
 
-  s.source_files = 'Pod/Classes/**/*'
+
+
+  s.platform = :ios, '10.0'
+  s.requires_arc = true
+
+  s.source_files = 'FullFeedback/Classes/**/*.{swift}'
+
+  s.resource_bundles = {
+     'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard}']
+  }
+
   s.dependency 'Alamofire', '~> 4.5'
   s.dependency 'MBProgressHUD'
 
-  s.resource_bundles = {
-     'FullFeedback' => ['FullFeedback/Classes/*.{storyboard}']
-}
 end
