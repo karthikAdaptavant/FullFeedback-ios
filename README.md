@@ -19,7 +19,33 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'FullFeedback'
 ```
-## 
+## Usage
+
+import FullFeedback
+
+    let obj = FeedbackHelper()
+    
+        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "Your loopToDoKey") else {
+            return
+        }
+        
+        params should be in the form of {
+        
+"applicationInfo": {
+"login": "optional",
+"version": 10
+},
+"DeviceInfo": {
+"deviceName": "User's device",
+"deviceModel": "iphone 7 plus",
+"Device Os version": 11.2
+}
+
+example :   let params = ["ApplicationInfo": ["version": 1, "login": "vamsi"],
+                      "DeviceInfo": ["DeviceName": "mymobile", "DeviceOsVersion": 11.2]]
+                      
+}
+        
 ## Author
 
 karthikAdaptavant, karthik.samy@a-cti.com
