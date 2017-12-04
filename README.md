@@ -37,7 +37,7 @@ import FullFeedback
 },
 "DeviceInfo": {
 "deviceName": "User's device",
-"deviceModel": "iphone 7 plus",
+"deviceModel": "Your device model",
 "Device Os version": 11.2
 }
 
