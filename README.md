@@ -11,6 +11,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Requirements
 
+
+
 ## Installation
 
 FullFeedback is available through [CocoaPods](http://cocoapods.org/pods/FullFeedback). To install
@@ -21,7 +23,9 @@ pod 'FullFeedback'
 ```
 ## Usage
 
-import FullFeedback
+    Note :  After pod install, go to pods targets then select FullFeedback pod, there you should include feedback storyboard in copy Bundle Resources and remove from compile sources if feedback storyboard is present there.
+    
+    import FullFeedback
 
         let obj = FeedbackHelper()
     
