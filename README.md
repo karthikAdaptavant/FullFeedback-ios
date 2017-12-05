@@ -18,7 +18,8 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 FullFeedback is available through [CocoaPods](http://cocoapods.org/pods/FullFeedback). To install
 it, simply add the following line to your Podfile:
 
-```ruby
+```ruby'
+platform :ios, '10.0'
 pod 'FullFeedback'
 ```
 ## Usage
