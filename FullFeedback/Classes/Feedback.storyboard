@@ -41,7 +41,9 @@
                                         <constraints>
                                             <constraint firstAttribute="width" constant="55" id="Bjl-s9-Ytv"/>
                                         </constraints>
-                                        <state key="normal" title="Send"/>
+                                        <state key="normal" title="Send">
+                                            <color key="titleColor" red="0.40000000600000002" green="0.40000000600000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="sendFeedbackButton:" destination="Wox-L7-RUT" eventType="touchUpInside" id="V72-x7-qTh"/>
                                         </connections>

@@ -18,17 +18,20 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     
     var loopToDoKey: String = ""
     open var params: [String : Any] = [:]
-    open var setBackgroundColor:UIColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
-    open var rightButtonTitlecolor:UIColor? = UIColor(red: 0.80, green: 0.80, blue: 0.80, alpha: 1)
+    open var setBackgroundColor: UIColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
+    open var rightButtonTitlecolor: UIColor = UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
         super.viewDidLoad()
         setup()
     }
+    
     open override func viewWillAppear(_ animated: Bool) {
         navbarView.backgroundColor = setBackgroundColor
         rightButton.setTitleColor(rightButtonTitlecolor, for: .normal)
+        rightButton.setTitleColor(rightButtonTitlecolor, for: .highlighted)
+        rightButton.setTitleColor(rightButtonTitlecolor, for: .selected)
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -44,6 +47,9 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         feedbackText.delegate = self
         AppKeyboardListener.delegate = self
         feedbackText.becomeFirstResponder()
+        
+        self.feedbackText.layer.cornerRadius = 6
+        self.feedbackText.clipsToBounds = true
     }
     
     // MARK: Keyboard delegates
