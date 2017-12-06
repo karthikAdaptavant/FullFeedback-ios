@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   s.source_files = 'FullFeedback/Classes/**/*.{swift}'
 
   s.resource_bundles = {
-     'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard}']
+  'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard,png}']
   }
 
   s.dependency 'Alamofire', '~> 4.5'
