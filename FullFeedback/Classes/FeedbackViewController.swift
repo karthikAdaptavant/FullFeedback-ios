@@ -76,9 +76,11 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     
     @IBAction func sendFeedbackButton(_ sender: UIButton) {
         
-        guard let text = feedbackText.text, text != "" else {
+        guard let text = feedbackText.text, !text.isEmpty else {
             return
         }
+        
+        self.feedbackText.resignFirstResponder()
         
         self.postFeedback(forText: text)
     }
