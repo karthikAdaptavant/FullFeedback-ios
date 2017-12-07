@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.5.1)
-  - FullFeedback (0.1.0):
+  - FullFeedback (0.1.1):
     - Alamofire (~> 4.5)
     - MBProgressHUD
   - MBProgressHUD (1.0.0)
@@ -14,9 +14,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 2d95912bf4c34f164fdfc335872e8c312acaea4a
-  FullFeedback: 3fe44093d73ce83549e632a485f5c7febdb45b24
+  FullFeedback: a277ffca469989415344778818cf441eaa15b654
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
 
 PODFILE CHECKSUM: f4c3c4480c35c7d7401342e46b5a99e071fcd68f
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0.beta.2
