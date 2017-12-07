@@ -13,16 +13,11 @@ import Alamofire
 
 open class FeedbackHelper {
     
-    var paramDic: [String: Any] = [:]
-    
     public init() { }
     
     open func getFeedbackViewController(loopToDoKey key: String) -> FeedbackViewController? {
         
-        guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
-            print("bundle not found")
-            return nil
-        }
+        let bundle = FeedbackService.getBundle()
         
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
         
@@ -38,9 +33,14 @@ open class FeedbackHelper {
     
     public func postFeedback(withParam param: [String: Any], completion: ((_ success: Bool) -> ())?) {
         
-        let url = try! "http://my.loopto.do".asURL()
+        guard let url  = URL(string: "http://my.loopto.do") else {
+            completion?(false)
+            return
+        }
+        
         var urlRequest = URLRequest(url: url.appendingPathComponent("/forms/process"))
         let queryParameters:[String: Any] = ["json": true, "t": Int64(Date().timeIntervalSince1970 * 1000)]
+        
         urlRequest = try! URLEncoding.queryString.encode(urlRequest, with: queryParameters)
         urlRequest = try! URLEncoding.default.encode(urlRequest, with: param)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
@@ -53,7 +53,6 @@ open class FeedbackHelper {
                 completion?(false)
             case .success(_):
                 completion?(true)
-                
             }
         }
     }

@@ -8,40 +8,90 @@
 import UIKit
 import MBProgressHUD
 
+extension Dictionary {
+    
+    mutating func add(key: Key, value: Value?) {
+        if let value = value {
+            self[key] = value
+        }
+    }
+}
+
+class FeedbackService {
+    
+    static func getBundle() -> Bundle {
+        
+        guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
+            print("bundle not found")
+            fatalError()
+        }
+        return bundle
+    }
+}
+
+public struct FeedbackPayload {
+    
+    public var appLogin: String? = ""
+    public var appVersion: String = ""
+    public var deviceName: String = ""
+    public var deviceModel: String = ""
+    public var deviceOsVersion: String = ""
+    
+    public init() { }
+    
+    func toDict() -> [String: Any] {
+        
+        var applicationInfo: [String: Any] = [:]
+        applicationInfo.add(key: "login", value: self.appLogin)
+        applicationInfo["version"] = self.appVersion
+        
+        let deviceInfo: [String: Any] = ["DeviceName": self.deviceName,
+                                         "DeviceType": self.deviceModel,
+                                         "DeviceOsVersion": self.deviceOsVersion]
+        
+        let dict = ["ApplicationInfo": applicationInfo,
+                    "DeviceInfo": deviceInfo]
+        
+        return dict
+    }
+}
+
 open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
 
-    @IBOutlet open weak var leftButton: UIButton!
-    @IBOutlet open weak var setFeedbackTitle: UILabel!
-    @IBOutlet open weak var rightButton: UIButton!
-    @IBOutlet open weak var feedbackText: UITextView!
-    @IBOutlet open weak var navbarView: UIView!
+    @IBOutlet weak var titleText: UILabel!
+    @IBOutlet weak var leftButton: UIButton!
+    @IBOutlet weak var setFeedbackTitle: UILabel!
+    @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var feedbackText: UITextView!
+    @IBOutlet weak var navbarView: UIView!
     @IBOutlet weak var feedbackTextBottomconstraint: NSLayoutConstraint!
     
     var loopToDoKey: String = ""
-    open var params: [String : Any] = [:]
-    open var setBackgroundColor: UIColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
+    
+    open var navBarColor: UIColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
+    open var titleColor: UIColor = UIColor(red: 43, green: 51, blue: 62, alpha: 1)
     open var rightButtonTitlecolor: UIColor = UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
-    open var setImageForleftButton : UIImage?
-    open var setTitleForLeftButton : String = String()
-    open var setTitlecolorForLeftButton : UIColor =  UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
+    open var leftButtonImage : UIImage?
+    open var leftButtonTitle : String = String()
+    open var leftbuttonTitleColor : UIColor =  UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
+    open var statusBarStyle: UIStatusBarStyle = .default
+    
     open var feedbackPayload: FeedbackPayload = FeedbackPayload()
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
         super.viewDidLoad()
+        
         setup()
         leftButtonProperties()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
-        navbarView.backgroundColor = setBackgroundColor
-        rightButton.setTitleColor(rightButtonTitlecolor, for: .normal)
-        rightButton.setTitleColor(rightButtonTitlecolor, for: .highlighted)
-        rightButton.setTitleColor(rightButtonTitlecolor, for: .selected)
+        super.viewDidLoad()
     }
     
     open override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .default
+        return statusBarStyle
     }
     
     open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -49,38 +99,45 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     }
     
     func setup() {
-        alertHud =  self.getAlertHUD(srcView: self.view)
-        feedbackText.delegate = self
+        
+        self.alertHud =  self.getAlertHUD(srcView: self.view)
+        self.feedbackText.delegate = self
         AppKeyboardListener.delegate = self
-        feedbackText.becomeFirstResponder()
+        self.feedbackText.becomeFirstResponder()
         
         self.feedbackText.layer.cornerRadius = 6
         self.feedbackText.clipsToBounds = true
+        
+        self.titleText.textColor = titleColor
+        self.navbarView.backgroundColor = navBarColor
+        self.rightButton.setTitleColor(rightButtonTitlecolor, for: .normal)
+        self.rightButton.setTitleColor(rightButtonTitlecolor, for: .highlighted)
+        self.rightButton.setTitleColor(rightButtonTitlecolor, for: .selected)                
     }
     
     func leftButtonProperties(){
-        guard setTitleForLeftButton.isEmpty else {
+        
+        // Setting Custom title
+        guard leftButtonTitle.isEmpty else {
             leftButton.setImage(nil, for: .normal)
-            leftButton.setTitle(" \(setTitleForLeftButton)", for: .normal)
-            leftButton.setTitleColor(setTitlecolorForLeftButton, for: .normal)
+            leftButton.setTitle(" \(leftButtonTitle)", for: .normal)
+            leftButton.setTitleColor(leftbuttonTitleColor, for: .normal)
             return
         }
-        guard setImageForleftButton == nil else {
+        
+        // Setting custom image
+        guard leftButtonImage == nil else {
             leftButton.setTitle("", for: .normal)
-            leftButton.setImage(setImageForleftButton, for: .normal)
+            leftButton.setImage(leftButtonImage, for: .normal)
             return
         }
-        getCancelImage()
-        leftButton.setImage(setImageForleftButton, for: .normal)
+        
+        //System default cancel image
+        leftButton.setImage(getCancelImage(), for: .normal)
     }
     
-    func getCancelImage(){
-        guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
-            print("bundle not found")
-            return
-        }
-        let image = UIImage(named: "Cancel.png", in: bundle, compatibleWith: nil)
-        setImageForleftButton = image
+    func getCancelImage() -> UIImage {
+        return UIImage(named: "Cancel.png", in: FeedbackService.getBundle(), compatibleWith: nil)!
     }
     
     // MARK: Keyboard delegates
@@ -142,26 +199,3 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         }
     }
 }
-
-public struct FeedbackPayload {
-    
-    public var appLogin: String? = ""
-    public var appVersion: String = ""
-    public var deviceName: String = ""
-    public var deviceModel: String = ""
-    public var deviceOsVersion: String = ""
-    
-    public init() {
-        
-    }
-    
-    func toDict() -> [String: Any] {
-       let paramDict = ["ApplicationInfo":["login": self.appLogin, "version": self.appVersion], "DeviceInfo": ["DeviceName": self.deviceName, "DeviceType": self.deviceModel, "DeviceOsVersion": self.deviceOsVersion]]
-        
-        return paramDict
-    }
-    
-    
-    
-}
-

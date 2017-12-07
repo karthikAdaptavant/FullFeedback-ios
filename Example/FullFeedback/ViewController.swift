@@ -30,21 +30,20 @@ class ViewController: UIViewController {
             return
         }
         
-        var feedbackload = FeedbackPayload()
+        feedbackvc.leftButtonTitle = "Cancel"
+        feedbackvc.leftbuttonTitleColor = .white
+        feedbackvc.rightButtonTitlecolor = .white
+        feedbackvc.titleColor = .white
+        feedbackvc.navBarColor = UIColor.purple
+        feedbackvc.statusBarStyle = .lightContent
         
+        var feedbackload = FeedbackPayload()
         feedbackload.appLogin = "test"
         feedbackload.appVersion = "0.2.2"
         feedbackload.deviceModel = ""
-        
-         feedbackvc.feedbackPayload = feedbackload
-        
-//        feedbackvc.feedbackPayload.appLogin = "sdfds"
-//        feedbackvc.feedbackPayload.appVersion = 20
-//        feedbackvc.feedbackPayload.deviceName = "hi"
-//        feedbackvc.feedbackPayload.deviceModel = "7"
-//        feedbackvc.feedbackPayload.deviceOsVersion = 25
+        feedbackvc.feedbackPayload = feedbackload
+
         self.present(feedbackvc, animated: true, completion: nil)
-     
     }
 }
 
