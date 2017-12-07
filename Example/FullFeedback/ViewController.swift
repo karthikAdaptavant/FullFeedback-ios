@@ -24,19 +24,27 @@ class ViewController: UIViewController {
 
     @IBAction func feedbackBtnAct(_ sender: Any) {
         
-        let params = ["ApplicationInfo": ["version": 1, "login": "vamsi"],
-                      "DeviceInfo": ["DeviceName": "mymobile", "DeviceOsVersion": 11.2]]
-        
         let obj = FeedbackHelper()
 
         guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBiamNCgw") else {
             return
         }
         
-        feedbackvc.params = params
+        var feedbackload = FeedbackPayload()
+        
+        feedbackload.appLogin = "test"
+        feedbackload.appVersion = "0.2.2"
+        feedbackload.deviceModel = ""
+        
+         feedbackvc.feedbackPayload = feedbackload
+        
+//        feedbackvc.feedbackPayload.appLogin = "sdfds"
+//        feedbackvc.feedbackPayload.appVersion = 20
+//        feedbackvc.feedbackPayload.deviceName = "hi"
+//        feedbackvc.feedbackPayload.deviceModel = "7"
+//        feedbackvc.feedbackPayload.deviceOsVersion = 25
         self.present(feedbackvc, animated: true, completion: nil)
-    
-
+     
     }
 }
 

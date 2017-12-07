@@ -24,6 +24,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     open var setImageForleftButton : UIImage?
     open var setTitleForLeftButton : String = String()
     open var setTitlecolorForLeftButton : UIColor =  UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
+    open var feedbackPayload: FeedbackPayload = FeedbackPayload()
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
@@ -119,7 +120,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         
         self.alertHud.showLoader(msg: "Sending....")
         
-        let param = FeedbackHelper().getParam(forLoopKey: loopToDoKey, text: text, params: params)
+        let param = FeedbackHelper().getParam(forLoopKey: loopToDoKey, text: text, params: feedbackPayload)
         
         FeedbackHelper().postFeedback(withParam: param ) { (success) in
             
@@ -141,3 +142,26 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         }
     }
 }
+
+public struct FeedbackPayload {
+    
+    public var appLogin: String? = ""
+    public var appVersion: String = ""
+    public var deviceName: String = ""
+    public var deviceModel: String = ""
+    public var deviceOsVersion: String = ""
+    
+    public init() {
+        
+    }
+    
+    func toDict() -> [String: Any] {
+       let paramDict = ["ApplicationInfo":["login": self.appLogin, "version": self.appVersion], "DeviceInfo": ["DeviceName": self.deviceName, "DeviceType": self.deviceModel, "DeviceOsVersion": self.deviceOsVersion]]
+        
+        return paramDict
+    }
+    
+    
+    
+}
+

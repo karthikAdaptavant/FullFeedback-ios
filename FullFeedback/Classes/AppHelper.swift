@@ -13,6 +13,8 @@ import Alamofire
 
 open class FeedbackHelper {
     
+    var paramDic: [String: Any] = [:]
+    
     public init() { }
     
     open func getFeedbackViewController(loopToDoKey key: String) -> FeedbackViewController? {
@@ -56,37 +58,38 @@ open class FeedbackHelper {
         }
     }
     
-    open func getParam(forLoopKey loopkey: String, text: String, params: [String: Any]) -> [String: Any] {
+    open func getParam(forLoopKey loopkey: String, text: String, params: FeedbackPayload) -> [String: Any] {
         
         var constructedStr: String = "\(text)"
+        let paramDict: [String: Any] = params.toDict()
         
-        if let appInfo = params["ApplicationInfo"] as? [String: Any] {
-            
+        if let appInfo = paramDict["ApplicationInfo"] as? [String: Any] {
+
             if let login = appInfo["login"] as? String {
                 constructedStr += "<br><br>------------- User Info -------------<br>User email: \(login)"
             }
-            
-            if let version = appInfo["version"]  as? Int {
+
+            if let version = appInfo["version"] as? String {
                 constructedStr += "<br><br>------------- Application Info -------------<br>Application version: \(version)"
             }
         }
-        
-        if let deviceInfo = params["DeviceInfo"] as? [String: Any] {
-            
-            if let name = deviceInfo["DeviceName"] as? String {
+
+        if let deviceInfo = paramDict["DeviceInfo"] as? [String: Any] {
+
+            if let name = deviceInfo["DeviceName"] as? String, !name.isEmpty {
                 constructedStr += "<br><br>------------- Device Info -------------<br>Device Name: \(name)"
             }
-            
-            if let type = deviceInfo["DeviceType"] as? String {
+
+            if let type = deviceInfo["DeviceType"] as? String, !type.isEmpty {
                 constructedStr += "<br>Device Model: \(type)"
             }
-            
-            if let osVersion = deviceInfo["DeviceOsVersion"] {
+
+            if let osVersion = deviceInfo["DeviceOsVersion"] as? String {
                 constructedStr += "<br>DeviceOs Version: \(osVersion)"
             }
-            
+
         }
-        
+
         let param: [String: Any] =  ["user_tag": "", "tag": "feedBack", "loopKey": loopkey, "user_email": "", "card_title": "IOS FullFeedback","card_desc": constructedStr]
         
         return param
