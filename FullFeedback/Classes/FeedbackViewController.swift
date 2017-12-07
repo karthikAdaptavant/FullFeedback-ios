@@ -7,6 +7,7 @@
 
 import UIKit
 import MBProgressHUD
+
 open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
 
     @IBOutlet open weak var leftButton: UIButton!
@@ -20,11 +21,15 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     open var params: [String : Any] = [:]
     open var setBackgroundColor: UIColor = UIColor(red: 0.96, green: 0.96, blue: 0.96, alpha: 1)
     open var rightButtonTitlecolor: UIColor = UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
+    open var setImageForleftButton : UIImage?
+    open var setTitleForLeftButton : String = String()
+    open var setTitlecolorForLeftButton : UIColor =  UIColor(red: 0.4, green: 0.4, blue: 1, alpha: 1)
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
         super.viewDidLoad()
         setup()
+        leftButtonProperties()
     }
     
     open override func viewWillAppear(_ animated: Bool) {
@@ -50,6 +55,31 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         
         self.feedbackText.layer.cornerRadius = 6
         self.feedbackText.clipsToBounds = true
+    }
+    
+    func leftButtonProperties(){
+        guard setTitleForLeftButton.isEmpty else {
+            leftButton.setImage(nil, for: .normal)
+            leftButton.setTitle(" \(setTitleForLeftButton)", for: .normal)
+            leftButton.setTitleColor(setTitlecolorForLeftButton, for: .normal)
+            return
+        }
+        guard setImageForleftButton == nil else {
+            leftButton.setTitle("", for: .normal)
+            leftButton.setImage(setImageForleftButton, for: .normal)
+            return
+        }
+        getCancelImage()
+        leftButton.setImage(setImageForleftButton, for: .normal)
+    }
+    
+    func getCancelImage(){
+        guard let bundle = Bundle(identifier: "org.cocoapods.FullFeedback") else {
+            print("bundle not found")
+            return
+        }
+        let image = UIImage(named: "Cancel.png", in: bundle, compatibleWith: nil)
+        setImageForleftButton = image
     }
     
     // MARK: Keyboard delegates
