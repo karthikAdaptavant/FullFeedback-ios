@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
   s.name             = 'FullFeedback'
   s.version          = '0.1.3'
-  s.summary          = 'Full feedback is a framwork which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
+  s.summary          = 'Full feedback is a framework which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
   s.homepage         = 'https://github.com/karthikAdaptavant/FullFeedback-ios.git'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
