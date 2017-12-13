@@ -6,7 +6,6 @@
 //
 //
 
-
 import Foundation
 import UIKit
 import Alamofire
@@ -14,22 +13,6 @@ import Alamofire
 open class FeedbackHelper {
     
     public init() { }
-    
-    open func getFeedbackViewController(loopToDoKey key: String) -> FeedbackViewController? {
-        
-        let bundle = FeedbackService.getBundle()
-        
-        let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
-        
-        guard let feedbackVc = storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController else{
-            print("Error: Feedback viewcontroller not found")
-            return nil
-        }
-        
-        feedbackVc.loopToDoKey = key
-        
-        return feedbackVc
-    }
     
     public func postFeedback(withParam param: [String: Any], completion: ((_ success: Bool) -> ())?) {
         
@@ -57,39 +40,37 @@ open class FeedbackHelper {
         }
     }
     
-    open func getParam(forLoopKey loopkey: String, text: String, params: FeedbackPayload) -> [String: Any] {
+    open func getParam(forLoopKey loopkey: String, text: String, cardTitle: String,  userInfo: [String: Any]?, appInfo: [String: Any], deviceInfo: [String: Any], userName: String, userEmail: String, selectedIndexTag: String) -> [String: Any] {
         
         var constructedStr: String = "\(text)"
-        let paramDict: [String: Any] = params.toDict()
         
-        if let appInfo = paramDict["ApplicationInfo"] as? [String: Any] {
-
-            if let login = appInfo["login"] as? String {
-                constructedStr += "<br><br>------------- User Info -------------<br>User email: \(login)"
-            }
-
-            if let version = appInfo["version"] as? String {
-                constructedStr += "<br><br>------------- Application Info -------------<br>Application version: \(version)"
-            }
+        constructedStr += "<br><br>------------- Device Info -------------"
+        
+        for (key, value) in deviceInfo {
+            constructedStr += "<br> \(key): \(value)"
         }
-
-        if let deviceInfo = paramDict["DeviceInfo"] as? [String: Any] {
-
-            if let name = deviceInfo["DeviceName"] as? String, !name.isEmpty {
-                constructedStr += "<br><br>------------- Device Info -------------<br>Device Name: \(name)"
+        
+        constructedStr += "<br><br>------------- Application Info -------------"
+        
+        if !appInfo.isEmpty {
+            
+            for (key, value) in appInfo {
+                constructedStr += "<br> \(key): \(value)"
             }
-
-            if let type = deviceInfo["DeviceType"] as? String, !type.isEmpty {
-                constructedStr += "<br>Device Model: \(type)"
-            }
-
-            if let osVersion = deviceInfo["DeviceOsVersion"] as? String {
-                constructedStr += "<br>DeviceOs Version: \(osVersion)"
-            }
-
+            
         }
-
-        let param: [String: Any] =  ["user_tag": "", "tag": "feedBack", "loopKey": loopkey, "user_email": "", "card_title": "IOS FullFeedback","card_desc": constructedStr]
+        
+        if let userInfoDict = userInfo, !userInfoDict.isEmpty {
+            
+            constructedStr += "<br><br>------------- User Info -------------"
+            
+            for (key, value) in userInfoDict {
+                constructedStr += "<br> \(key): \(value)"
+            }
+            
+        }
+        
+        let param: [String: Any] =  ["user_tag": "", "tag": selectedIndexTag, "loopKey": loopkey, "user_name": userName ,"user_email": userEmail, "card_title": cardTitle,"card_desc": constructedStr]
         
         return param
     }

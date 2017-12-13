@@ -9,7 +9,7 @@ import UIKit
 import MBProgressHUD
 
 extension MBProgressHUD {
-
+    
     var tapGestureRecognizer: UITapGestureRecognizer {
         return UITapGestureRecognizer(target: self, action: #selector(hudTapped))
     }
@@ -27,13 +27,13 @@ extension MBProgressHUD {
         
         // for alerts
         if delay > 0 {
-    
+            
             DispatchQueue.main.async {
                 self.hide(true, afterDelay: delay)
             }
             
             self.isUserInteractionEnabled = true
-
+            
             self.addGestureRecognizer(tapGestureRecognizer)
             
         } else { // for Loaders
@@ -58,7 +58,7 @@ extension MBProgressHUD {
     }
     
     func showBottomLoader(delay: TimeInterval = 0) {
-
+        
         setupHUD()
         setText(msg: "")
         self.mode = .indeterminate
