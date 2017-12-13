@@ -24,25 +24,18 @@ class ViewController: UIViewController {
 
     @IBAction func feedbackBtnAct(_ sender: Any) {
         
-        let obj = FeedbackHelper()
-
-        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBiamNCgw") else {
+        guard let feedbackvc = FeedbackViewController.initialize(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBl8iYCww", feedbackCardTitle: "Test Pod Feedback") else {
             return
         }
         
-        feedbackvc.leftButtonTitle = "Cancel"
-        feedbackvc.leftbuttonTitleColor = .white
-        feedbackvc.rightButtonTitlecolor = .white
-        feedbackvc.titleColor = .white
-        feedbackvc.navBarColor = UIColor.purple
         feedbackvc.statusBarStyle = .lightContent
+        feedbackvc.userName = "Venkata vamsi"
+        feedbackvc.userEmail = "venkata.vamsi@full.co"
         
-        var feedbackload = FeedbackPayload()
-        feedbackload.appLogin = "test"
-        feedbackload.appVersion = "0.2.2"
-        feedbackload.deviceModel = ""
-        feedbackvc.feedbackPayload = feedbackload
-
+        feedbackvc.appInfo = ["appVersion": 11, "appName": "MyApp"]
+        feedbackvc.deviceInfo = ["deviceaaa": "dfsfe"]
+        feedbackvc.userInfo = ["Name": "vamsi"]
+     
         self.present(feedbackvc, animated: true, completion: nil)
     }
 }

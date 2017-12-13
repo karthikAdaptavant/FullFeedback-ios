@@ -1,16 +1,16 @@
  //
-//  MBProgressHUDHelper.swift
-//  FullFeedback_Example
-//
-//  Created by user on 02/12/17.
-//  Copyright © 2017 CocoaPods. All rights reserved.
-//
-
-import Foundation
-import UIKit
-import MBProgressHUD
-
-extension UIViewController {
+ //  MBProgressHUDHelper.swift
+ //  FullFeedback_Example
+ //
+ //  Created by user on 02/12/17.
+ //  Copyright © 2017 CocoaPods. All rights reserved.
+ //
+ 
+ import Foundation
+ import UIKit
+ import MBProgressHUD
+ 
+ extension UIViewController {
     
     public func getAlertHUD(srcView: UIView) -> MBProgressHUD {
         
@@ -23,5 +23,10 @@ extension UIViewController {
         hud.contentColor = .white
         hud.label.textColor = .white
         return hud
-    }    
-}
+    }
+    
+ }
+ 
+
+ 
+ 

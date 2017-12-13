@@ -1,6 +1,6 @@
 
 Pod::Spec.new do |s|
-  s.name             = 'FullFeedback'
+  s.name             = 'LoopTodo'
   s.version          = '0.1.2'
   s.summary          = 'Full feedback is a framwork which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
