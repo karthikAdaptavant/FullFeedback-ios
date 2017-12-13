@@ -1,4 +1,4 @@
-//
+ //
 //  FeedbackViewController.swift
 //  FullFeedback
 //
@@ -23,8 +23,7 @@ class FeedbackService {
         }
         
         return bundle
-    }
-    
+    }    
 }
 
 open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
@@ -93,6 +92,8 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         self.segmentedControl.backgroundColor = segmentControlBgColor
         self.segmentedControl.tintColor = segmentControlTintColor
         
+        self.segmentedControl.selectedSegmentIndex = 0
+        self.feedbackLabel.text = "What's your suggestion?"
     }
     
     func leftButtonProperties(){
@@ -143,16 +144,14 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBAction func feedbackType(_ sender: UISegmentedControl) {
         
         switch segmentedControl.selectedSegmentIndex {
-        case 0:
-            feedbackLabel.text = "What's your suggestion?"
+        
         case 1:
-            feedbackLabel.text = "Please describe your problem"
+            feedbackLabel.text = "Please describe your problem."
         case 2:
-            feedbackLabel.text = "Ask your question here"
+            feedbackLabel.text = "Ask your question here."
         default:
             feedbackLabel.text = "What's your suggestion?"
         }
-        
     }
     
     // MARK: Keyboard delegates
@@ -245,8 +244,4 @@ public extension UIColor {
 
         self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
     }
-
 }
-
-
-
