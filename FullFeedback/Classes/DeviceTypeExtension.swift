@@ -41,6 +41,16 @@ public extension UIDevice {
             return "iPhone 6s"
         case "iPhone8,2":
             return "iPhone 6s Plus"
+        case "iPhone9,1", "iPhone9,3":
+            return "iPhone 7"
+        case "iPhone9,2", "iPhone9,4":
+            return "iPhone 7 Plus"
+        case "iPhone10,1", "iPhone10,4":
+            return "iPhone 8"
+        case "iPhone10,2", "iPhone10,5":
+            return "iPhone 8 Plus"
+        case "iPhone10,3", "iPhone10,6":
+            return "iPhone X"
         case "i386", "x86_64":
             return "Simulator"
         default:

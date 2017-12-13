@@ -208,7 +208,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     }
     
     func constructDeviceInfo() -> [String: Any] {
-        return  ["Model": UIDevice.current.model, "SystemName": UIDevice.current.systemName, "Version": UIDevice.current.systemVersion, "DeviceName": UIDevice.current.name]
+        return  ["Model": UIDevice.current.model,"DeviceType": UIDevice.current.modelName, "SystemName": UIDevice.current.systemName, "Version": UIDevice.current.systemVersion, "DeviceName": UIDevice.current.name]
     }
     
     func postFeedback(forText text: String) {
