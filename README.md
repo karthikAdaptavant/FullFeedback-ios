@@ -20,7 +20,7 @@ it, simply add the following line to your Podfile:
 
 ```ruby'
 platform :ios, '10.0'
-pod 'FullFeedback'
+pod 'FullFeedback', '~> 0.1.4'
 ```
 ## Usage
    
