@@ -46,7 +46,7 @@ pod 'FullFeedback'
                                    
 ## Author
 
-Vamsi Vekata, venkata.vamsi@full.co
+Vamsi Venkata, venkata.vamsi@full.co
 
 ## License
 
