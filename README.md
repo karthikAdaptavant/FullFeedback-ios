@@ -23,31 +23,27 @@ platform :ios, '10.0'
 pod 'FullFeedback'
 ```
 ## Usage
-
-    Note :  After pod install, go to pods targets then select FullFeedback pod, there you should include feedback storyboard in copy Bundle Resources and remove from compile sources if feedback storyboard is present there.
     
+    * Note: By default we are having a dictionary with 5 key value pairs i.e, Model - iPhone, DeviceType - iPhone 6, SystemName - iPhone OS, Version - 9.3.5, DeviceName - yourDeviceName. Addition to these properties if you want to add more you can provide them in device info dictionary.
+    
+          we provided you with properties: left button title, left button image , left button title color, right button title, right button image, right button title color, segmented control background color, segmented control tint color, nav bar color, and statusbar style.
+    
+  
     import FullFeedback
-
-        let obj = FeedbackHelper()
     
-        guard let feedbackvc = obj.getFeedbackViewController(loopToDoKey: "Your loopToDoKey") else {
+    guard let feedbackvc = FeedbackViewController.initialize(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBl8iYCww", feedbackCardTitle: "Test Pod Feedback") else {
             return
         }
         
-        Parameter structure should be:  
+        feedbackvc.userName = "Venkata vamsi"
+        feedbackvc.userEmail = "venkata.vamsi@full.co"
         
-          {
-          "applicationInfo": {
-            "login": "optional",
-            "version": 10
-          },
-          "DeviceInfo": {
-            "deviceName": "User's device",
-            "deviceModel": "Your device model",
-            "Device Os version": 11.2
-          }
-        }
-                              
+        feedbackvc.appInfo = ["appVersion": 11, "appName": "MyApp"]
+        feedbackvc.deviceInfo = ["deviceaaa": "dfsfe"]
+        feedbackvc.userInfo = ["Name": "vamsi"]
+        
+        self.present(feedbackvc, animated: true, completion: nil)
+                                   
 ## Author
 
 Vamsi Vekata, venkata.vamsi@full.co
