@@ -24,23 +24,21 @@ pod 'FullFeedback'
 ```
 ## Usage
     
-    * Note: By default we are having a dictionary with 5 key value pairs i.e, Model - iPhone, DeviceType - iPhone 6, SystemName - iPhone OS, Version - 9.3.5, DeviceName - yourDeviceName. Addition to these properties if you want to add more you can provide them in device info dictionary.
+    * Note: By default we have a dictionary with 5 key value pairs i.e, Model - iPhone, DeviceType - iPhone 6, SystemName - iPhone OS, Version - 9.3.5, DeviceName - yourDeviceName. Addition to these properties if you want to add more you can provide them in device info dictionary.
     
-          we provided you with properties: left button title, left button image , left button title color, right button title, right button image, right button title color, segmented control background color, segmented control tint color, nav bar color, and statusbar style.
-    
-  
     import FullFeedback
     
-    guard let feedbackvc = FeedbackViewController.initialize(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBl8iYCww", feedbackCardTitle: "Test Pod Feedback") else {
+    guard let feedbackvc = FeedbackViewController.initialize(loopToDoKey: "Your loopTodo key", feedbackCardTitle: "Feedback card title") else {
             return
         }
         
-        feedbackvc.userName = "Venkata vamsi"
-        feedbackvc.userEmail = "venkata.vamsi@full.co"
+        // userName -> Logged in userName
+        feedbackvc.userName = "user name"
+        feedbackvc.userEmail = "user email"
         
-        feedbackvc.appInfo = ["appVersion": 11, "appName": "MyApp"]
-        feedbackvc.deviceInfo = ["deviceaaa": "dfsfe"]
-        feedbackvc.userInfo = ["Name": "vamsi"]
+        feedbackvc.appInfo = [:]
+        feedbackvc.deviceInfo = [:]
+        feedbackvc.userInfo = [:]
         
         self.present(feedbackvc, animated: true, completion: nil)
                                    
