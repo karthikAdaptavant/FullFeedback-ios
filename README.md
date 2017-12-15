@@ -43,10 +43,23 @@ pod 'FullFeedback', '~> 0.1.4'
         feedbackvc.deviceInfo -> [String: Any]
         feedbackvc.userInfo -> [String: Any]
         
- ## Custom
-        
-    Customizable navigation items and appearance    
-                                   
+ ## To Customize
+ 
+  To customize navigation bar left button, right button, Title, navigation bar color and, segmented control:
+  
+        feedbackvc.statusBarStyle 
+        feedbackvc.leftButtonTitle
+        feedbackvc.leftButtonTitleColor
+        feedbackvc.leftButtonImage
+        feedbackvc.rightButtonTitle
+        feedbackvc.rightButtonTitleColor
+        feedbackvc.rightButtonTitleColor
+        feedbackvc.navBarColor
+        feedbackvc.segmentControlBgColor
+        feedbackvc.segmentControlTintColor
+        feedbackvc.title
+        feedbackvc.titleColor
+                              
 ## Author
 
     Vamsi Venkata, venkata.vamsi@full.co
