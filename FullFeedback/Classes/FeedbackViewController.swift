@@ -42,7 +42,6 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    var barButtonTopConst: CGFloat = 30
     var loopToDoKey: String = String()
     var feedbackCardTitle: String = String()
     
@@ -102,10 +101,10 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         
         // To change the navbar height for iphonex
         let isIPhoneX: Bool = UIDevice.current.isIphoneX
-        self.navBarViewHeight.constant = isIPhoneX ? 74 : 64
+        self.navBarViewHeight.constant = isIPhoneX ? 84 : 64
         
         // To change the navbar Top cons for iphonex
-        let topConsHeight = isIPhoneX ? 30 : barButtonTopConst
+        var topConsHeight: CGFloat = isIPhoneX ? 30 : 20
         self.leftBarButtonTopConst.constant = topConsHeight
         self.rightBarButtonTopConst.constant = topConsHeight
         self.feedbackLblTopConst.constant = topConsHeight
