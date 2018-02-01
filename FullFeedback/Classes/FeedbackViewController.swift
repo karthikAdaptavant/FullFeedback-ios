@@ -34,6 +34,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var rightButton: UIButton!
     @IBOutlet weak var feedbackTextView: UITextView!
     @IBOutlet weak var navbarView: UIView!
+    @IBOutlet weak var navBarViewHeight: NSLayoutConstraint!
     @IBOutlet weak var feedbackTextBottomconstraint: NSLayoutConstraint!
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
@@ -94,6 +95,8 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         
         self.segmentedControl.selectedSegmentIndex = 0
         self.feedbackLabel.text = "What's your suggestion?"
+        
+        self.navBarViewHeight.constant = (UIDevice.current.isIphoneX) ? 74 : 64
     }
     
     func leftButtonProperties(){

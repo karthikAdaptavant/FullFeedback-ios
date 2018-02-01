@@ -10,6 +10,10 @@ import UIKit
 
 public extension UIDevice {
     
+    var isIphoneX: Bool {
+        return UIDevice.current.modelName == "iPhone X"
+    }
+    
     var modelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)

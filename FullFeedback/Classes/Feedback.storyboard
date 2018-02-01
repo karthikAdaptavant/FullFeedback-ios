@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -127,6 +127,7 @@
                         <outlet property="feedbackTextBottomconstraint" destination="zA2-1k-Ehq" id="cRv-bx-Sfx"/>
                         <outlet property="feedbackTextView" destination="rJz-3o-b8H" id="eIb-BT-55J"/>
                         <outlet property="leftButton" destination="HkM-7Q-9Hy" id="dyo-PD-i6c"/>
+                        <outlet property="navBarViewHeight" destination="gb2-QM-F4c" id="Prm-Cj-XEP"/>
                         <outlet property="navbarView" destination="P2h-sq-ZVO" id="Hi2-sA-y0m"/>
                         <outlet property="rightButton" destination="wUK-eE-Tfu" id="8hy-Yi-8cG"/>
                         <outlet property="segmentedControl" destination="5Yj-ek-bdl" id="4Ww-Y1-NdV"/>
