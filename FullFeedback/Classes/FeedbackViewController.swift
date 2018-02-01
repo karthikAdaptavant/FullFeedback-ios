@@ -35,10 +35,14 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var feedbackTextView: UITextView!
     @IBOutlet weak var navbarView: UIView!
     @IBOutlet weak var navBarViewHeight: NSLayoutConstraint!
+    @IBOutlet weak var leftBarButtonTopConst: NSLayoutConstraint!
+    @IBOutlet weak var rightBarButtonTopConst: NSLayoutConstraint!
+    @IBOutlet weak var feedbackLblTopConst: NSLayoutConstraint!
     @IBOutlet weak var feedbackTextBottomconstraint: NSLayoutConstraint!
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
+    var barButtonTopConst: CGFloat = 30
     var loopToDoKey: String = String()
     var feedbackCardTitle: String = String()
     
@@ -96,7 +100,15 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         self.segmentedControl.selectedSegmentIndex = 0
         self.feedbackLabel.text = "What's your suggestion?"
         
-        self.navBarViewHeight.constant = (UIDevice.current.isIphoneX) ? 74 : 64
+        // To change the navbar height for iphonex
+        let isIPhoneX: Bool = UIDevice.current.isIphoneX
+        self.navBarViewHeight.constant = isIPhoneX ? 74 : 64
+        
+        // To change the navbar Top cons for iphonex
+        let topConsHeight = isIPhoneX ? 30 : barButtonTopConst
+        self.leftBarButtonTopConst.constant = topConsHeight
+        self.rightBarButtonTopConst.constant = topConsHeight
+        self.feedbackLblTopConst.constant = topConsHeight
     }
     
     func leftButtonProperties(){

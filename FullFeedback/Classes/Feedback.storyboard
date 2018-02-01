@@ -124,11 +124,14 @@
                     </view>
                     <connections>
                         <outlet property="feedbackLabel" destination="2Bd-Vz-no1" id="Ca8-td-hhi"/>
+                        <outlet property="feedbackLblTopConst" destination="WtV-yR-v6v" id="F3O-CM-Oe9"/>
                         <outlet property="feedbackTextBottomconstraint" destination="zA2-1k-Ehq" id="cRv-bx-Sfx"/>
                         <outlet property="feedbackTextView" destination="rJz-3o-b8H" id="eIb-BT-55J"/>
+                        <outlet property="leftBarButtonTopConst" destination="7Rq-9x-hiO" id="BmZ-49-4d2"/>
                         <outlet property="leftButton" destination="HkM-7Q-9Hy" id="dyo-PD-i6c"/>
                         <outlet property="navBarViewHeight" destination="gb2-QM-F4c" id="Prm-Cj-XEP"/>
                         <outlet property="navbarView" destination="P2h-sq-ZVO" id="Hi2-sA-y0m"/>
+                        <outlet property="rightBarButtonTopConst" destination="hsa-Z3-joZ" id="bMF-eo-xCy"/>
                         <outlet property="rightButton" destination="wUK-eE-Tfu" id="8hy-Yi-8cG"/>
                         <outlet property="segmentedControl" destination="5Yj-ek-bdl" id="4Ww-Y1-NdV"/>
                         <outlet property="setFeedbackTitle" destination="auC-eK-qdb" id="ixO-2R-s5e"/>
