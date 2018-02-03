@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   }
 
   s.dependency 'Alamofire', '~> 4.5'
-  s.dependency 'MBProgressHUD' '~> 1.0.0'
+  s.dependency 'MBProgressHUD' '~> 0.9'
 
 end
