@@ -43,7 +43,7 @@ class KeyboardListener: NSObject {
     
     
     // Show Methods
-    func keyboard_WillShow(_ notification: Notification) {
+    @objc func keyboard_WillShow(_ notification: Notification) {
         
         let userInfo = notification.userInfo!
         let kbSize: CGSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size
@@ -54,17 +54,17 @@ class KeyboardListener: NSObject {
         delegate?.keyboard_WillShow(notification)
     }
     
-    func keyboard_DidShow(_ notification: Notification) {
+    @objc func keyboard_DidShow(_ notification: Notification) {
         delegate?.keyboard_DidShow(notification)
     }
     
     // Hide Methods
-    func keyboard_WillHide(_ notification: Notification) {
+    @objc func keyboard_WillHide(_ notification: Notification) {
         isKeyboardVisible = false
         delegate?.keyboard_WillHide(notification)
     }
     
-    func keyboard_DidHide(_ notification: Notification) {
+    @objc func keyboard_DidHide(_ notification: Notification) {
         isKeyboardVisible = false
         delegate?.keyboard_DidHide(notification)
     }
