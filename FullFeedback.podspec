@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FullFeedback'
-  s.version          = '0.1.5'
+  s.version          = '0.1.6'
   s.summary          = 'Full feedback is a framework which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
   s.homepage         = 'https://github.com/karthikAdaptavant/FullFeedback-ios.git'
@@ -22,6 +22,6 @@ Pod::Spec.new do |s|
   }
 
   s.dependency 'Alamofire', '~> 4.5'
-  s.dependency 'MBProgressHUD' '~> 0.9'
+  s.dependency 'MBProgressHUD', '1.0.0'
 
 end
