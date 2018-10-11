@@ -14,6 +14,18 @@ public extension UIDevice {
         return UIDevice.current.modelName == "iPhone X"
     }
     
+    var largerDevice: [String] {
+        return ["iPhone X", "iPhone XS", "iPhone XS Max", "iPhone XR"]
+    }
+    
+    var isLargerDevice: Bool {
+        return largerDevice.contains(UIDevice.current.modelName)
+    }
+    
+    var isIphoneMax: Bool {
+        return UIDevice.current.modelName == "iPhone XS Max"
+    }
+    
     var modelName: String {
         var systemInfo = utsname()
         uname(&systemInfo)
@@ -57,6 +69,14 @@ public extension UIDevice {
             return "iPhone X"
         case "i386", "x86_64":
             return "Simulator"
+        case ".iPhoneX":
+            return "iPhone X"
+        case ".iPhoneXS":
+            return "iPhone XS"
+        case ".iPhoneXSMax":
+            return "iPhone XS Max"
+        case ".iPhoneXR":
+                return "iPhone XR"
         default:
             return identifier
         }

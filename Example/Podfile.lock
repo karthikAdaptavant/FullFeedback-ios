@@ -8,9 +8,14 @@ PODS:
 DEPENDENCIES:
   - FullFeedback (from `../`)
 
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Alamofire
+    - MBProgressHUD
+
 EXTERNAL SOURCES:
   FullFeedback:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
   Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
@@ -19,4 +24,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: f4c3c4480c35c7d7401342e46b5a99e071fcd68f
 
-COCOAPODS: 1.4.0
+COCOAPODS: 1.5.3
