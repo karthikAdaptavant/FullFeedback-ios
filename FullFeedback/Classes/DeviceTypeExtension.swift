@@ -14,12 +14,12 @@ public extension UIDevice {
         return UIDevice.current.modelName == "iPhone X"
     }
     
-    var largerDevice: [String] {
+    var xDevices: [String] {
         return ["iPhone X", "iPhone XS", "iPhone XS Max", "iPhone XR"]
     }
     
-    var isLargerDevice: Bool {
-        return largerDevice.contains(UIDevice.current.modelName)
+    var isXDevice: Bool {
+        return xDevices.contains(UIDevice.current.modelName)
     }
     
     var isIphoneMax: Bool {
