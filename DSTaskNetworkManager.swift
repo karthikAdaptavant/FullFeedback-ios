@@ -19,6 +19,7 @@ struct DSFeedbackParams {
 
 class DSTaskApiHandler {
     
+    // Task Construction
     func constructTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
         
         let queryParams: [String: Any] = ["apikey": Constants.apiKey]
@@ -46,9 +47,23 @@ class DSTaskApiHandler {
         urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
         urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
         
+        urlRequest.setValue(dsParams.dsParamHelper.accessToken, forHTTPHeaderField: "Authorization")
+        
         return urlRequest
     }
     
+    // MARK: Network Request
+    func makeTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
+        
+        Alamofire.request(request).responseData { (response) in
+            
+            switch response.result {
+                
+            case .success(_):
+                completion?(true)
+            case .failure(let error):
+                completion?(false)
+            }
+        }
+    }
 }
-
-

@@ -40,14 +40,39 @@ struct ConstantsStruct {
 public enum DSTaskError: Error {
     
     case invalidURL(String)
+    case invalidParam(String)
+    
+//    case invalidDepartment
+//    case invalidDepartmentId
+//    case invalidBrandId
+//
+//    case invalidType
+//    case invalidSource
+//
+//    case invalidAccessToken
+//    case invalidEmailId
     
     public var description: String {
         
         switch self {
         case .invalidURL(let error):
             return error.description
+        case .invalidParam(let error):
+            return error.description
         default:
-            break
+            return self.localizedDescription
         }
     }
+}
+
+// MARK: ErrorValidator Type
+enum ErrorValidatorType: String {
+    
+    case department = "Department"
+    case departmentId = "DepartmentID"
+    case brandId = "BrandID"
+    case type = "Type"
+    case source = "Source"
+    case accessToken = "AccessToken"
+    case emailId = "EmailID"
 }

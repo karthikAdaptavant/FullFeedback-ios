@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Alamofire
 
 // MARK: Consumer should give the params
 struct DSParamHelper {
@@ -17,7 +18,9 @@ struct DSParamHelper {
     
     let type: String
     let source: String
-
+    
+    let accessToken: String
+    
     //UserInfo
     let emailId: String
     var userName: String?
@@ -42,7 +45,42 @@ class DSFeedbackApiService {
         self.feedbackSignature = feedbackSignature
     }
     
-    private func constructHistoryComments() -> [[String: Any]] {
+    func postFeedback(_ completion: DSTaskCompletion?) throws {
+        
+        try validateDSParams()
+        
+        let historyComments = try constructHistoryComments()
+        
+        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: historyComments, documents: constructUploadDocuments(), relationShips: constructSearchRelationShips())
+        
+        let urlRequest = try dsTaskApiHandler.constructTaskRequest(dsFeedbackParams)
+        
+        // Show Hud
+        
+        dsTaskApiHandler.makeTaskRequest(urlRequest) { (success) in
+            
+            // Hide Hud
+        }
+    }
+    
+    func validateDSParams() throws {
+        
+        try validate(param: dsParamHelper.departmentId, of: .department)
+        try validate(param: dsParamHelper.brandId, of: .brandId)
+        
+        try validate(param: dsParamHelper.source, of: .source)
+        try validate(param: dsParamHelper.type, of: .type)
+        
+        try validate(param: dsParamHelper.accessToken, of: .accessToken)
+    }
+}
+
+// MARK: JSON Constructor
+extension DSFeedbackApiService {
+    
+    private func constructHistoryComments() throws -> [[String: Any]] {
+        
+        try validate(param: dsParamHelper.emailId, of: .emailId)
         
         var userInfo = "<\(dsParamHelper.emailId)>"
         
@@ -50,8 +88,20 @@ class DSFeedbackApiService {
             userInfo = "<\(name)>" + userInfo
         }
         
+        try validate(param: dsParamHelper.departmentId, of: .departmentId)
+        
         let historyComments: [[String: Any]] = [["historyComments": "\(feedback) \n\n \(feedbackSignature ?? "")   ", "ownerName": "\(userInfo)", "type": "inboundemail", "departmentID": dsParamHelper.departmentId]]
         return historyComments
+    }
+    
+    private func constructUploadDocuments() -> [String: Any]? {
+        
+        guard let documents = dsParamHelper.documents else {
+            return nil
+        }
+        
+        let uploadDocuments: [String: Any]? = ["uploadedDocuments": dsParamHelper.documents]
+        return uploadDocuments
     }
     
     private func constructSearchRelationShips() -> [String: Any]? {
@@ -63,22 +113,15 @@ class DSFeedbackApiService {
         let searchRelationShip: [String: Any] = ["accountsID": accountIds]
         return searchRelationShip
     }
-    
-    private func uploadDocuments() -> [String: Any]? {
-        
-        guard let documents = dsParamHelper.documents else {
-            return nil
-        }
-        
-        let uploadDocuments: [String: Any]? = ["uploadedDocuments": dsParamHelper.documents]
-        return uploadDocuments
-    }
-    
-    func postFeedback(_ completion: DSTaskCompletion?) throws {
-        
-        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: constructHistoryComments(), documents: uploadDocuments(), relationShips: constructSearchRelationShips())
-        
-        let urlRequest = try dsTaskApiHandler.constructTaskRequest(dsFeedbackParams)
-    }
+}
 
+// MARK: Validtor
+extension DSFeedbackApiService {
+    
+    func validate(param: String, of type: ErrorValidatorType) throws {
+        
+        guard !param.isEmpty else {
+            throw DSTaskError.invalidParam("Invalid \(type.rawValue)")
+        }
+    }
 }
