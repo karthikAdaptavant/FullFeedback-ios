@@ -14,7 +14,6 @@ public struct DSParamHelper {
     let department: String
     let departmentId: String
     let brandId: String
-    var accountIds: [String]?
     
     let type: String
     let source: String
@@ -26,7 +25,9 @@ public struct DSParamHelper {
     var userName: String?
     
     var documents: [String]?
+    var accountIds: [String]?
     
+    // For AW
     public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String) {
         
         self.department = department
@@ -34,13 +35,14 @@ public struct DSParamHelper {
         
         self.brandId = brandId
         
-        self.type = type
-        self.source = source
+        self.type = type        // or TaskType
+        self.source = source    // or Tags
         
         self.accessToken = accessToken
         self.emailId = emailId
     }
     
+    // For DS Task
     public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String, accountIds: [String]?, userName: String?, documents: [String]?) {
         
         self.init(department: department, departmentId: departmentId, brandId: brandId, type: type, source: source, accessToken: accessToken, emailId: emailId)
@@ -69,19 +71,6 @@ class DSFeedbackApiService {
         self.feedbackSignature = feedbackSignature
     }
     
-    func postFeedback(_ completion: DSTaskCompletion?) throws {
-        
-        try validateDSParams()
-        
-        let historyComments = try constructHistoryComments()
-        
-        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: historyComments, documents: constructUploadDocuments(), relationShips: constructSearchRelationShips(), comments: feedback)
-        
-        let urlRequest = try dsTaskApiHandler.constructTaskRequest(dsFeedbackParams)
-        
-        dsTaskApiHandler.makeTaskRequest(urlRequest, completion)
-    }
-    
     private func validateDSParams() throws {
         
         try validate(param: dsParamHelper.department, of: .department)
@@ -93,6 +82,44 @@ class DSFeedbackApiService {
         try validate(param: dsParamHelper.accessToken, of: .accessToken)
     }
 }
+
+// MARK: POST Feedback
+extension DSFeedbackApiService {
+    
+    func postFeedback(appType: AppType, _ completion: DSTaskCompletion?) throws {
+        
+        switch appType {
+        case .dsTask:
+            try postDSFeedback(completion)
+        case .awFeedback:
+            try postAWFeedback(completion)
+        }
+    }
+    
+    func postDSFeedback(_ completion: DSTaskCompletion?) throws {
+        
+        try validateDSParams()
+        
+        let historyComments = try constructHistoryComments()
+        
+        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: historyComments, documents: constructUploadDocuments(), relationShips: constructSearchRelationShips(), comments: feedback)
+        
+        let urlRequest = try dsTaskApiHandler.constructDSTaskRequest(dsFeedbackParams)
+        
+        dsTaskApiHandler.makeDSTaskRequest(urlRequest, completion)
+    }
+    
+    func postAWFeedback(_ completion: DSTaskCompletion?) throws {
+        
+        try validateDSParams()
+        
+        try validate(param: dsParamHelper.departmentId, of: .departmentId)
+        try validate(param: dsParamHelper.emailId, of: .emailId)
+        
+        dsTaskApiHandler.makeAWTaskRequest(self.feedback, dsParamHelper, completion)
+    }
+}
+
 
 // MARK: JSON Constructor
 extension DSFeedbackApiService {

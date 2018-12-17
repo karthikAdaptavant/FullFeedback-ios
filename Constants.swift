@@ -22,15 +22,18 @@ struct ConstantsStruct {
     
     let urlStr: String
     let apiKey: String
+    let awUrlStr: String
     
     init(mode: DSTaskModeType) {
         
         switch mode {
         case .live:
             urlStr = "https://my.distributedsource.com"
+            awUrlStr = "https://api.anywhereworks.com"
             apiKey = "SEN42"
         case .staging:
             urlStr = "https://mystaging.distributedsource.com"
+            awUrlStr = "https://api-dot-staging-fullspectrum.appspot.com"
             apiKey = "SEN42"
         }
     }
@@ -75,4 +78,20 @@ enum ErrorValidatorType: String {
     case source = "Source"
     case accessToken = "AccessToken"
     case emailId = "EmailID"
+}
+
+// MARK: Choose App Type
+public enum AppType {
+    
+    case dsTask
+    case awFeedback
+}
+
+
+// MARK: Extension For .utf8 conversion
+extension String {
+    
+    func toData() -> Data {
+        return self.data(using: String.Encoding.utf8)!
+    }
 }

@@ -1,14 +1,14 @@
  //
-//  FeedbackViewController.swift
-//  FullFeedback
-//
-//  Created by Karthik on 11/22/17.
-//
-
-import UIKit
-import MBProgressHUD
-
-class FeedbackService {
+ //  FeedbackViewController.swift
+ //  FullFeedback
+ //
+ //  Created by Karthik on 11/22/17.
+ //
+ 
+ import UIKit
+ import MBProgressHUD
+ 
+ class FeedbackService {
     
     static func getBundle() -> Bundle {
         
@@ -24,9 +24,9 @@ class FeedbackService {
         
         return bundle
     }    
-}
-
-open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
+ }
+ 
+ open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
     
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var leftButton: UIButton!
@@ -43,6 +43,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
     var dsParamHelper: DSParamHelper?
+    var appType: AppType = .dsTask
     
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
@@ -59,7 +60,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     open var segmentControlBgColor: UIColor = UIColor.white
     open var segmentControlTintColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var statusBarStyle: UIStatusBarStyle = .default
-
+    
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
@@ -155,7 +156,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBAction func feedbackType(_ sender: UISegmentedControl) {
         
         switch segmentedControl.selectedSegmentIndex {
-        
+            
         case 1:
             feedbackLabel.text = "Please describe your problem."
         case 2:
@@ -182,7 +183,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         print("Keyboard did hide is called")
     }
     
-    open class func initialize(dsParamHelper: DSParamHelper) -> FeedbackViewController? {
+    open class func initialize(dsParamHelper: DSParamHelper, appType: AppType) -> FeedbackViewController? {
         
         let bundle = FeedbackService.getBundle()
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
@@ -193,6 +194,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         }
         
         feedbackVc.dsParamHelper = dsParamHelper
+        feedbackVc.appType = appType
         return feedbackVc
     }
     
@@ -239,7 +241,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         guard let dsParam = dsParamHelper else {
             return
         }
-
+        
         let signature = FeedbackHelper().constructFeedbackSignature(userInfo: userInfo, appInfo: appInfo, deviceInfo: deviceInfo)
         let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, signature)
         
@@ -247,7 +249,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         
         do {
             
-           try dsFeedbackApiService.postFeedback { (success) in
+            try dsFeedbackApiService.postFeedback(appType: appType) { (success) in
                 
                 guard success else {
                     self.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
@@ -263,6 +265,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
                     self.dismissFeedbackvc()
                 })
             }
+            
         } catch let error {
             print("ERROR: \(error)")
             self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
@@ -272,12 +275,12 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     func dismissFeedbackvc() {
         self.dismiss(animated: true, completion: nil)
     }
-}
-
-public extension UIColor {
-
+ }
+ 
+ public extension UIColor {
+    
     public convenience init(rawRGBValue red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-
+        
         self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
     }
-}
+ }

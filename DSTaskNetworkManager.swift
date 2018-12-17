@@ -18,10 +18,19 @@ struct DSFeedbackParams {
     var comments: String
 }
 
+enum AWFeedbackParamsKey: String {
+    
+    case dept = "dept"
+    case deptId = "deptId"
+    case taskType = "task_type"
+    case brandId = "brand_id"
+    case tags = "tags"
+}
+
 class DSTaskApiHandler {
     
     // Task Construction
-    internal func constructTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
+    internal func constructDSTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
         
         let queryParams: [String: Any] = ["apikey": Constants.apiKey]
         
@@ -54,7 +63,7 @@ class DSTaskApiHandler {
     }
     
     // MARK: Network Request
-    internal func makeTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
+    internal func makeDSTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
         
         Alamofire.request(request).responseData { (response) in
             
@@ -68,3 +77,47 @@ class DSTaskApiHandler {
         }
     }
 }
+
+// MARK: AW Task Handler
+extension DSTaskApiHandler {
+    
+    internal func makeAWTaskRequest(_ feedback: String, _ dsParams: DSParamHelper, _ completion: DSTaskCompletion?) {
+        
+        let urlStr: String = Constants.awUrlStr + "/api/v1/task"
+        
+        Alamofire.upload(multipartFormData: { formdata in
+            
+            formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.rawValue)
+            formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.rawValue)
+            formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.rawValue)
+            formdata.append(dsParams.brandId.toData(), withName: AWFeedbackParamsKey.brandId.rawValue)
+            formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.rawValue)
+            
+            formdata.append(feedback.toData(), withName: "card_title")
+            
+        }, usingThreshold: UInt64.init(), to: urlStr, method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"], encodingCompletion: { (encodingResult) in
+            
+            switch encodingResult {
+                
+            case .success(let upload, _, _):
+                
+                upload.responseJSON(completionHandler: { (response) in
+                    
+                    if let resp = response.response, (resp.statusCode == 400) {
+                        completion?(false)
+                        return
+                    }
+                    
+                    guard response.result.isSuccess else {
+                        completion?(false)
+                        return
+                    }
+                    completion?(true)
+                })
+                
+            case .failure(let encodingError):
+                completion?(false)
+            }
+        })
+    }
+ }
