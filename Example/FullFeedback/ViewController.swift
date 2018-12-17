@@ -24,19 +24,20 @@ class ViewController: UIViewController {
 
     @IBAction func feedbackBtnAct(_ sender: Any) {
         
-        guard let feedbackvc = FeedbackViewController.initialize(loopToDoKey: "agtzfmxvb3BhYmFja3IRCxIETG9vcBiAgKDBl8iYCww", feedbackCardTitle: "Test Pod Feedback") else {
+        let accessToken = ""
+        
+        let dsParamHelper = DSParamHelper(department: "", departmentId: "", brandId: "", type: "", source: "", accessToken: accessToken, emailId: "", accountIds: [""], userName: "", documents: nil)
+        
+        
+        guard let feedbackVc = FeedbackViewController.initialize(dsParamHelper: dsParamHelper) else {
             return
         }
         
-        feedbackvc.statusBarStyle = .lightContent
-        feedbackvc.userName = "Venkata vamsi"
-        feedbackvc.userEmail = "venkata.vamsi@full.co"
+        feedbackVc.statusBarStyle = .lightContent
+        feedbackVc.appInfo = ["appVersion": 11, "appName": "MyApp"]
+        feedbackVc.userInfo = ["Name": "Sathish"]
         
-        feedbackvc.appInfo = ["appVersion": 11, "appName": "MyApp"]
-        feedbackvc.deviceInfo = ["deviceaaa": "dfsfe"]
-        feedbackvc.userInfo = ["Name": "vamsi"]
-     
-        self.present(feedbackvc, animated: true, completion: nil)
+        self.present(feedbackVc, animated: true, completion: nil)
     }
+    
 }
-
