@@ -42,14 +42,11 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    var loopToDoKey: String = String()
-    var feedbackCardTitle: String = String()
+    var dsParamHelper: DSParamHelper?
     
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
     open var deviceInfo: [String: Any] = [:]
-    open var userName: String?
-    open var userEmail: String?
     
     open var navBarColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var titleColor: UIColor = UIColor.white
@@ -185,7 +182,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         print("Keyboard did hide is called")
     }
     
-    open class func initialize(loopToDoKey key: String, feedbackCardTitle cardTitle: String) -> FeedbackViewController? {
+    open class func initialize(dsParamHelper: DSParamHelper) -> FeedbackViewController? {
         
         let bundle = FeedbackService.getBundle()
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
@@ -195,9 +192,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
             return nil
         }
         
-        feedbackVc.loopToDoKey = key
-        feedbackVc.feedbackCardTitle = cardTitle
-        
+        feedbackVc.dsParamHelper = dsParamHelper
         return feedbackVc
     }
     
@@ -213,6 +208,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         }
         
         let constructedDeviceInfo = constructDeviceInfo()
+        constructUserInfo()
         for (key, value) in constructedDeviceInfo {
             deviceInfo.updateValue(value, forKey: key)
         }
@@ -225,30 +221,56 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         return  ["Model": UIDevice.current.model,"DeviceType": UIDevice.current.modelName, "SystemName": UIDevice.current.systemName, "Version": UIDevice.current.systemVersion, "DeviceName": UIDevice.current.name]
     }
     
+    func constructUserInfo() {
+        
+        guard self.userInfo.isEmpty, let dsParam = dsParamHelper else {
+            return
+        }
+        
+        userInfo = ["EmailId": dsParam.emailId]
+        
+        if let userName = dsParam.userName {
+            userInfo.updateValue("Name", forKey: userName)
+        }
+    }
+    
     func postFeedback(forText text: String) {
+        
+        guard let dsParam = dsParamHelper else {
+            return
+        }
+
+        let signature = FeedbackHelper().constructFeedbackSignature(userInfo: userInfo, appInfo: appInfo, deviceInfo: deviceInfo)
+        let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, signature)
         
         self.alertHud.showLoader(msg: "Sending....")
         
-        let param = FeedbackHelper().getParam(forLoopKey: loopToDoKey, text: text,cardTitle: feedbackCardTitle, userInfo: userInfo, appInfo: appInfo, deviceInfo: deviceInfo, userName: userName ?? "", userEmail: userEmail ?? "", selectedIndexTag: segmentedControl.titleForSegment(at: segmentedControl.selectedSegmentIndex)!)
-        
-        FeedbackHelper().postFeedback(withParam: param ) { (success) in
+        do {
             
-            guard success else {
-                self.alertHud.showText(msg: "Something went wrong!", detailMsg: "Please ", delay: 1.9)
-                return
+           try dsFeedbackApiService.postFeedback { (success) in
+                
+                guard success else {
+                    self.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
+                    return
+                }
+                
+                self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+                    
+                    guard let `self` = self else {return}
+                    self.feedbackTextView.resignFirstResponder()
+                    self.dismissFeedbackvc()
+                })
             }
-            
-            self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                self.feedbackTextView.resignFirstResponder()
-                dismissFeedbackvc()
-            })
+        } catch let error {
+            print("ERROR: \(error)")
+            self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
         }
-        
-        func dismissFeedbackvc() {
-            self.dismiss(animated: true, completion: nil)
-        }
+    }
+    
+    func dismissFeedbackvc() {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 

@@ -15,16 +15,17 @@ struct DSFeedbackParams {
     
     var documents: [String: Any]?
     var relationShips: [String: Any]?
+    var comments: String
 }
 
 class DSTaskApiHandler {
     
     // Task Construction
-    func constructTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
+    internal func constructTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
         
         let queryParams: [String: Any] = ["apikey": Constants.apiKey]
         
-        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId, "department": dsParams.dsParamHelper.department, "type": dsParams.dsParamHelper.type, "comments": "", "brandID": dsParams.dsParamHelper.brandId]
+        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId, "department": dsParams.dsParamHelper.department, "type": dsParams.dsParamHelper.type, "comments": dsParams.comments, "brandID": dsParams.dsParamHelper.brandId]
         
         params.updateValue(dsParams.historyComments, forKey: "history")
         params.updateValue(dsParams.dsParamHelper.source, forKey: "source")
@@ -53,7 +54,7 @@ class DSTaskApiHandler {
     }
     
     // MARK: Network Request
-    func makeTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
+    internal func makeTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
         
         Alamofire.request(request).responseData { (response) in
             

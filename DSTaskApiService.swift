@@ -8,8 +8,8 @@
 import Foundation
 import Alamofire
 
-// MARK: Consumer should give the params
-struct DSParamHelper {
+// MARK: Pod Consumer should give the params
+public struct DSParamHelper {
     
     let department: String
     let departmentId: String
@@ -26,6 +26,30 @@ struct DSParamHelper {
     var userName: String?
     
     var documents: [String]?
+    
+    public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String) {
+        
+        self.department = department
+        self.departmentId = departmentId
+        
+        self.brandId = brandId
+        
+        self.type = type
+        self.source = source
+        
+        self.accessToken = accessToken
+        self.emailId = emailId
+    }
+    
+    public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String, accountIds: [String]?, userName: String?, documents: [String]?) {
+        
+        self.init(department: department, departmentId: departmentId, brandId: brandId, type: type, source: source, accessToken: accessToken, emailId: emailId)
+        
+        // Optionals
+        self.accountIds = accountIds
+        self.userName = userName
+        self.documents = documents
+    }
 }
 
 typealias DSTaskCompletion = ((_ success: Bool) -> Void)
@@ -51,21 +75,16 @@ class DSFeedbackApiService {
         
         let historyComments = try constructHistoryComments()
         
-        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: historyComments, documents: constructUploadDocuments(), relationShips: constructSearchRelationShips())
+        let dsFeedbackParams = DSFeedbackParams(dsParamHelper: dsParamHelper, historyComments: historyComments, documents: constructUploadDocuments(), relationShips: constructSearchRelationShips(), comments: feedback)
         
         let urlRequest = try dsTaskApiHandler.constructTaskRequest(dsFeedbackParams)
         
-        // Show Hud
-        
-        dsTaskApiHandler.makeTaskRequest(urlRequest) { (success) in
-            
-            // Hide Hud
-        }
+        dsTaskApiHandler.makeTaskRequest(urlRequest, completion)
     }
     
-    func validateDSParams() throws {
+    private func validateDSParams() throws {
         
-        try validate(param: dsParamHelper.departmentId, of: .department)
+        try validate(param: dsParamHelper.department, of: .department)
         try validate(param: dsParamHelper.brandId, of: .brandId)
         
         try validate(param: dsParamHelper.source, of: .source)
@@ -118,7 +137,7 @@ extension DSFeedbackApiService {
 // MARK: Validtor
 extension DSFeedbackApiService {
     
-    func validate(param: String, of type: ErrorValidatorType) throws {
+    private func validate(param: String, of type: ErrorValidatorType) throws {
         
         guard !param.isEmpty else {
             throw DSTaskError.invalidParam("Invalid \(type.rawValue)")
