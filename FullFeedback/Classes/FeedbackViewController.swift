@@ -44,6 +44,7 @@
     
     var dsParamHelper: DSParamHelper?
     var appType: AppType = .dsTask
+    var feedbackInfo: String = ""
     
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
@@ -183,7 +184,7 @@
         print("Keyboard did hide is called")
     }
     
-    open class func initialize(dsParamHelper: DSParamHelper, appType: AppType) -> FeedbackViewController? {
+    open class func initialize(dsParamHelper: DSParamHelper, appType: AppType, feedbackInfo: String) -> FeedbackViewController? {
         
         let bundle = FeedbackService.getBundle()
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
@@ -195,6 +196,7 @@
         
         feedbackVc.dsParamHelper = dsParamHelper
         feedbackVc.appType = appType
+        feedbackVc.feedbackInfo = feedbackInfo
         return feedbackVc
     }
     
@@ -209,31 +211,8 @@
             return
         }
         
-        let constructedDeviceInfo = constructDeviceInfo()
-        constructUserInfo()
-        for (key, value) in constructedDeviceInfo {
-            deviceInfo.updateValue(value, forKey: key)
-        }
-        
         self.feedbackTextView.resignFirstResponder()
         self.postFeedback(forText: text)
-    }
-    
-    func constructDeviceInfo() -> [String: Any] {
-        return  ["Model": UIDevice.current.model,"DeviceType": UIDevice.current.modelName, "SystemName": UIDevice.current.systemName, "Version": UIDevice.current.systemVersion, "DeviceName": UIDevice.current.name]
-    }
-    
-    func constructUserInfo() {
-        
-        guard self.userInfo.isEmpty, let dsParam = dsParamHelper else {
-            return
-        }
-        
-        userInfo = ["EmailId": dsParam.emailId]
-        
-        if let userName = dsParam.userName {
-            userInfo.updateValue("Name", forKey: userName)
-        }
     }
     
     func postFeedback(forText text: String) {
@@ -242,8 +221,7 @@
             return
         }
         
-        let signature = FeedbackHelper().constructFeedbackSignature(userInfo: userInfo, appInfo: appInfo, deviceInfo: deviceInfo)
-        let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, signature)
+        let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, feedbackInfo)
         
         self.alertHud.showLoader(msg: "Sending....")
         
