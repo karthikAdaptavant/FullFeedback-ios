@@ -22,10 +22,14 @@ struct DSFeedbackParams {
 enum AWFeedbackParamsKey: String {
     
     case dept = "dept"
-    case deptId = "deptId"
+    case deptId = "dept_id"
     case taskType = "task_type"
     case brandId = "brand_id"
     case tags = "tags"
+    
+    var value: String {
+        return self.rawValue
+    }
 }
 
 class DSTaskApiHandler {
@@ -88,11 +92,11 @@ extension DSTaskApiHandler {
         
         Alamofire.upload(multipartFormData: { formdata in
             
-            formdata.append(dsParams.department.data(using: String.Encoding.utf8)!, withName: "dept")
-            formdata.append(dsParams.departmentId.data(using: String.Encoding.utf8)!, withName: "deptId")
-            formdata.append(dsParams.type.data(using: String.Encoding.utf8)!, withName: "task_type")
-            formdata.append(dsParams.brandId.data(using: String.Encoding.utf8)!, withName: "brand_id")
-            formdata.append(dsParams.source.data(using: String.Encoding.utf8)!, withName: "tags")
+            formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
+            formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.value)
+            formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.value)
+            formdata.append(dsParams.brandId.toData(), withName: AWFeedbackParamsKey.brandId.value)
+            formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.value)
             
             formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
             

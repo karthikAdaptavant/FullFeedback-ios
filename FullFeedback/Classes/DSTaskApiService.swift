@@ -15,12 +15,11 @@ public struct DSParamHelper {
     let departmentId: String
     let brandId: String
     
-    let type: String
-    let source: String
+    let type: String     // or TaskType in AW
+    let source: String   // or Tags in AW
     
     let accessToken: String
     
-    //UserInfo
     let emailId: String
     var userName: String?
     
@@ -35,8 +34,8 @@ public struct DSParamHelper {
         
         self.brandId = brandId
         
-        self.type = type        // or TaskType
-        self.source = source    // or Tags
+        self.type = type        // or TaskType in AW
+        self.source = source    // or Tags in AW
         
         self.accessToken = accessToken
         self.emailId = emailId
@@ -116,9 +115,12 @@ extension DSFeedbackApiService {
         try validate(param: dsParamHelper.departmentId, of: .departmentId)
         try validate(param: dsParamHelper.emailId, of: .emailId)
         
-        let comment = "\(feedback) \(feedbackSignature)"
+        var comment = "\(feedback)"
         
-        dsTaskApiHandler.makeAWTaskRequest(self.feedback, dsParamHelper, completion)
+        if let feedbackInfo = feedbackSignature {
+            comment += " \(feedbackInfo)"
+        }
+        dsTaskApiHandler.makeAWTaskRequest(comment, dsParamHelper, completion)
     }
 }
 
