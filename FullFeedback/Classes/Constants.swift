@@ -33,7 +33,7 @@ struct ConstantsStruct {
             apiKey = "SEN42"
         case .staging:
             urlStr = "https://mystaging.distributedsource.com"
-            awUrlStr = "https://api-dot-staging-fullspectrum.appspot.com"
+            awUrlStr = "https://api.staging.anywhereworks.com"
             apiKey = "SEN42"
         }
     }
