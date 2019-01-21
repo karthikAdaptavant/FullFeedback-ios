@@ -57,7 +57,7 @@
     open var leftButtonTitleColor : UIColor =  UIColor.white
     open var rightButtonImage : UIImage?
     open var rightButtonTitle : String = String()
-    open var rightButtonTitleColor: UIColor = UIColor(rawRGBValue: 118, green: 214, blue: 255, alpha: 1)
+    open var rightButtonTitleColor: UIColor = UIColor.white
     open var segmentControlBgColor: UIColor = UIColor.white
     open var segmentControlTintColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var statusBarStyle: UIStatusBarStyle = .default

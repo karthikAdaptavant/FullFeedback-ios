@@ -13,7 +13,6 @@ public struct DSParamHelper {
     
     let department: String
     let departmentId: String
-    let brandId: String
     
     let type: String     // or TaskType in AW
     let source: String   // or Tags in AW
@@ -23,30 +22,33 @@ public struct DSParamHelper {
     let emailId: String
     var userName: String?
     
+    var brandId: String?  // Need as optional for Setmore
     var documents: [String]?
-    var accountIds: [String]?
+    
+    var accountIds: [String]?       // for Yoco
+    var setmoreAccountId: String?   // for setmore
     
     // For AW
-    public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String) {
+    public init(department: String, departmentId: String, type: String, source: String, accessToken: String, emailId: String,  brandId: String?) {
         
         self.department = department
         self.departmentId = departmentId
-        
-        self.brandId = brandId
         
         self.type = type        // or TaskType in AW
         self.source = source    // or Tags in AW
         
         self.accessToken = accessToken
         self.emailId = emailId
+        self.brandId = brandId
     }
     
     // For DS Task
-    public init(department: String, departmentId: String, brandId: String, type: String, source: String, accessToken: String, emailId: String, accountIds: [String]?, userName: String?, documents: [String]?) {
+    public init(department: String, departmentId: String, type: String, source: String, accessToken: String, emailId: String, brandId: String?, accountIds: [String]?, userName: String?, documents: [String]?) {
         
-        self.init(department: department, departmentId: departmentId, brandId: brandId, type: type, source: source, accessToken: accessToken, emailId: emailId)
+        self.init(department: department, departmentId: departmentId, type: type, source: source, accessToken: accessToken, emailId: emailId, brandId: brandId)
         
         // Optionals
+        self.brandId = brandId
         self.accountIds = accountIds
         self.userName = userName
         self.documents = documents
@@ -73,7 +75,7 @@ class DSFeedbackApiService {
     private func validateDSParams() throws {
         
         try validate(param: dsParamHelper.department, of: .department)
-        try validate(param: dsParamHelper.brandId, of: .brandId)
+        try validate(brandId: dsParamHelper.brandId)
         
         try validate(param: dsParamHelper.source, of: .source)
         try validate(param: dsParamHelper.type, of: .type)
@@ -172,6 +174,15 @@ extension DSFeedbackApiService {
         
         guard !param.isEmpty else {
             throw DSTaskError.invalidParam("Invalid \(type.rawValue)")
+        }
+    }
+    
+    private func validate(brandId: String?) throws {
+        
+        if let id = brandId {
+            guard !id.isEmpty else {
+                throw DSTaskError.invalidParam("Invalid BrandId")
+            }
         }
     }
 }

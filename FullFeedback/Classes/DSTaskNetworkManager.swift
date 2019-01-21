@@ -95,8 +95,11 @@ extension DSTaskApiHandler {
             formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
             formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.value)
             formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.value)
-            formdata.append(dsParams.brandId.toData(), withName: AWFeedbackParamsKey.brandId.value)
             formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.value)
+            
+            if let brandId = dsParams.brandId {
+                formdata.append(dsParams.brandId!.toData(), withName: AWFeedbackParamsKey.brandId.value)
+            }
             
             formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
             
