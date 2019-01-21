@@ -43,7 +43,7 @@ public struct DSParamHelper {
     }
     
     // For DS Task
-    public init(department: String, departmentId: String, type: String, source: String, accessToken: String, emailId: String, brandId: String?, accountIds: [String]?, userName: String?, documents: [String]?) {
+    public init(department: String, departmentId: String, type: String, source: String, accessToken: String, emailId: String, brandId: String?, accountIds: [String]?, userName: String?, documents: [String]?, setmoreAccountId: String?) {
         
         self.init(department: department, departmentId: departmentId, type: type, source: source, accessToken: accessToken, emailId: emailId, brandId: brandId)
         
@@ -52,6 +52,7 @@ public struct DSParamHelper {
         self.accountIds = accountIds
         self.userName = userName
         self.documents = documents
+        self.setmoreAccountId = setmoreAccountId
     }
 }
 
@@ -158,12 +159,19 @@ extension DSFeedbackApiService {
     
     private func constructSearchRelationShips() -> [String: Any]? {
         
-        guard let accountIds = dsParamHelper.accountIds else {
-            return nil
+        var searchRelationShip: [String: Any]?
+        
+        if let accountIds = dsParamHelper.accountIds {
+            searchRelationShip?.updateValue(accountIds, forKey: "accountsID")
+            return searchRelationShip
         }
         
-        let searchRelationShip: [String: Any] = ["accountsID": accountIds]
-        return searchRelationShip
+        if let accountId = dsParamHelper.setmoreAccountId {
+            searchRelationShip?.updateValue(accountId, forKey: "accountsID")
+            return searchRelationShip
+        }
+        
+        return nil
     }
 }
 
