@@ -61,6 +61,7 @@
     open var segmentControlBgColor: UIColor = UIColor.white
     open var segmentControlTintColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var statusBarStyle: UIStatusBarStyle = .default
+    open var navBarGradientLayer: CAGradientLayer?
     
     var alertHud: MBProgressHUD!
     
@@ -107,6 +108,9 @@
         self.leftBarButtonTopConst.constant = topConsHeight
         self.rightBarButtonTopConst.constant = topConsHeight
         self.feedbackLblTopConst.constant = topConsHeight
+        
+        // Add Gradient Layer for NavBar
+        setGradientLayerForNavBar()
     }
     
     func leftButtonProperties(){
@@ -151,7 +155,17 @@
         //System default rightButton title
         rightButton.setTitle("Send", for: .normal)
         rightButton.setTitleColor(rightButtonTitleColor, for: .normal)
+    }
+    
+    // Add GradientColor for NavigationBar
+    func setGradientLayerForNavBar() {
         
+        guard let layer = self.navBarGradientLayer else {
+            return
+        }
+        // To make the layer frame to fit with NavBar
+        layer.frame = self.navbarView.frame
+        self.navbarView.layer.insertSublayer(layer, at: 0)
     }
     
     @IBAction func feedbackType(_ sender: UISegmentedControl) {
