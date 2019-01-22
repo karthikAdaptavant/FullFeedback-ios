@@ -39,10 +39,14 @@ class DSTaskApiHandler {
         
         let queryParams: [String: Any] = ["apikey": Constants.apiKey]
         
-        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId, "department": dsParams.dsParamHelper.department, "type": dsParams.dsParamHelper.type, "comments": dsParams.comments, "brandID": dsParams.dsParamHelper.brandId]
+        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId, "department": dsParams.dsParamHelper.department, "type": dsParams.dsParamHelper.type, "comments": dsParams.comments]
         
         params.updateValue(dsParams.historyComments, forKey: "history")
         params.updateValue(dsParams.dsParamHelper.source, forKey: "source")
+        
+        if let brandId = dsParams.dsParamHelper.brandId {
+            params.updateValue(brandId, forKey: "brandID")
+        }
         
         if let searchRelationShip = dsParams.relationShips {
             params.updateValue(searchRelationShip, forKey: "searchRelationships")
