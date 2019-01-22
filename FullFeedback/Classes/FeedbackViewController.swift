@@ -61,7 +61,6 @@
     open var segmentControlBgColor: UIColor = UIColor.white
     open var segmentControlTintColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var statusBarStyle: UIStatusBarStyle = .default
-    open var navBarGradientLayer: CAGradientLayer?
     
     var alertHud: MBProgressHUD!
     
@@ -100,17 +99,15 @@
         self.feedbackLabel.text = "What's your suggestion?"
         
         // To change the navbar height for iphonex
-        let isIPhoneX: Bool = UIDevice.current.isIphoneX
-        self.navBarViewHeight.constant = isIPhoneX ? 84 : 64
+        let isXdevice: Bool = UIDevice.current.isXDevice
+        self.navBarViewHeight.constant = isXdevice ? 84 : 64
         
         // To change the navbar Top cons for iphonex
-        var topConsHeight: CGFloat = isIPhoneX ? 30 : 20
+        var topConsHeight: CGFloat = isXdevice ? 30 : 20
         self.leftBarButtonTopConst.constant = topConsHeight
         self.rightBarButtonTopConst.constant = topConsHeight
         self.feedbackLblTopConst.constant = topConsHeight
         
-        // Add Gradient Layer for NavBar
-        setGradientLayerForNavBar()
     }
     
     func leftButtonProperties(){
@@ -155,17 +152,6 @@
         //System default rightButton title
         rightButton.setTitle("Send", for: .normal)
         rightButton.setTitleColor(rightButtonTitleColor, for: .normal)
-    }
-    
-    // Add GradientColor for NavigationBar
-    func setGradientLayerForNavBar() {
-        
-        guard let layer = self.navBarGradientLayer else {
-            return
-        }
-        // To make the layer frame to fit with NavBar
-        layer.frame = self.navbarView.frame
-        self.navbarView.layer.insertSublayer(layer, at: 0)
     }
     
     @IBAction func feedbackType(_ sender: UISegmentedControl) {
@@ -222,6 +208,7 @@
     @IBAction func sendFeedbackButton(_ sender: UIButton) {
         
         guard let text = feedbackTextView.text, !text.isEmpty else {
+            self.alertHud.showText(msg: "Please, Enter some Feedback", delay: 1.9)
             return
         }
         
