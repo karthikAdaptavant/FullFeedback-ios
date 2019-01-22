@@ -159,18 +159,15 @@ extension DSFeedbackApiService {
     
     private func constructSearchRelationShips() -> [String: Any]? {
         
-        var searchRelationShip: [String: Any]?
-        
         if let accountIds = dsParamHelper.accountIds {
-            searchRelationShip?.updateValue(accountIds, forKey: "accountsID")
+            let searchRelationShip: [String: Any] = ["accountsID": accountIds]
             return searchRelationShip
         }
         
         if let accountId = dsParamHelper.setmoreAccountId {
-            searchRelationShip?.updateValue(accountId, forKey: "accountsID")
+            let searchRelationShip: [String: Any] = ["accountsID": accountId]
             return searchRelationShip
         }
-        
         return nil
     }
 }
