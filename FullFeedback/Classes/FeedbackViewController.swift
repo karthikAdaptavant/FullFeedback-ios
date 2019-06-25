@@ -1,14 +1,14 @@
  //
-//  FeedbackViewController.swift
-//  FullFeedback
-//
-//  Created by Karthik on 11/22/17.
-//
-
-import UIKit
-import MBProgressHUD
-
-class FeedbackService {
+ //  FeedbackViewController.swift
+ //  FullFeedback
+ //
+ //  Created by Karthik on 11/22/17.
+ //
+ 
+ import UIKit
+ import MBProgressHUD
+ 
+ class FeedbackService {
     
     static func getBundle() -> Bundle {
         
@@ -24,9 +24,9 @@ class FeedbackService {
         
         return bundle
     }    
-}
-
-open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
+ }
+ 
+ open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
     
     @IBOutlet weak var titleText: UILabel!
     @IBOutlet weak var leftButton: UIButton!
@@ -42,14 +42,13 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    var loopToDoKey: String = String()
-    var feedbackCardTitle: String = String()
+    var dsParamHelper: DSParamHelper?
+    var appType: AppType = .dsTask
+    var feedbackInfo: String = ""
     
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
     open var deviceInfo: [String: Any] = [:]
-    open var userName: String?
-    open var userEmail: String?
     
     open var navBarColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var titleColor: UIColor = UIColor.white
@@ -58,11 +57,11 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     open var leftButtonTitleColor : UIColor =  UIColor.white
     open var rightButtonImage : UIImage?
     open var rightButtonTitle : String = String()
-    open var rightButtonTitleColor: UIColor = UIColor(rawRGBValue: 118, green: 214, blue: 255, alpha: 1)
+    open var rightButtonTitleColor: UIColor = UIColor.white
     open var segmentControlBgColor: UIColor = UIColor.white
     open var segmentControlTintColor: UIColor = UIColor(rawRGBValue: 63, green: 72, blue: 87, alpha: 1)
     open var statusBarStyle: UIStatusBarStyle = .default
-
+    
     var alertHud: MBProgressHUD!
     
     override open func viewDidLoad() {
@@ -100,14 +99,15 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         self.feedbackLabel.text = "What's your suggestion?"
         
         // To change the navbar height for iphonex
-        let isIPhoneX: Bool = UIDevice.current.isIphoneX
-        self.navBarViewHeight.constant = isIPhoneX ? 84 : 64
+        let isXdevice: Bool = UIDevice.current.isXDevice
+        self.navBarViewHeight.constant = isXdevice ? 84 : 64
         
         // To change the navbar Top cons for iphonex
-        var topConsHeight: CGFloat = isIPhoneX ? 30 : 20
+        var topConsHeight: CGFloat = isXdevice ? 30 : 20
         self.leftBarButtonTopConst.constant = topConsHeight
         self.rightBarButtonTopConst.constant = topConsHeight
         self.feedbackLblTopConst.constant = topConsHeight
+        
     }
     
     func leftButtonProperties(){
@@ -152,13 +152,12 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         //System default rightButton title
         rightButton.setTitle("Send", for: .normal)
         rightButton.setTitleColor(rightButtonTitleColor, for: .normal)
-        
     }
     
     @IBAction func feedbackType(_ sender: UISegmentedControl) {
         
         switch segmentedControl.selectedSegmentIndex {
-        
+            
         case 1:
             feedbackLabel.text = "Please describe your problem."
         case 2:
@@ -185,7 +184,7 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
         print("Keyboard did hide is called")
     }
     
-    open class func initialize(loopToDoKey key: String, feedbackCardTitle cardTitle: String) -> FeedbackViewController? {
+    open class func initialize(dsParamHelper: DSParamHelper, appType: AppType, feedbackInfo: String) -> FeedbackViewController? {
         
         let bundle = FeedbackService.getBundle()
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
@@ -195,9 +194,9 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
             return nil
         }
         
-        feedbackVc.loopToDoKey = key
-        feedbackVc.feedbackCardTitle = cardTitle
-        
+        feedbackVc.dsParamHelper = dsParamHelper
+        feedbackVc.appType = appType
+        feedbackVc.feedbackInfo = feedbackInfo
         return feedbackVc
     }
     
@@ -209,53 +208,58 @@ open class FeedbackViewController: UIViewController, UITextViewDelegate, Keyboar
     @IBAction func sendFeedbackButton(_ sender: UIButton) {
         
         guard let text = feedbackTextView.text, !text.isEmpty else {
+            self.alertHud.showText(msg: "Please, Enter some Feedback", delay: 1.9)
             return
-        }
-        
-        let constructedDeviceInfo = constructDeviceInfo()
-        for (key, value) in constructedDeviceInfo {
-            deviceInfo.updateValue(value, forKey: key)
         }
         
         self.feedbackTextView.resignFirstResponder()
         self.postFeedback(forText: text)
     }
     
-    func constructDeviceInfo() -> [String: Any] {
-        return  ["Model": UIDevice.current.model,"DeviceType": UIDevice.current.modelName, "SystemName": UIDevice.current.systemName, "Version": UIDevice.current.systemVersion, "DeviceName": UIDevice.current.name]
-    }
-    
     func postFeedback(forText text: String) {
+        
+        guard let dsParam = dsParamHelper else {
+            return
+        }
+        
+        let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, feedbackInfo)
         
         self.alertHud.showLoader(msg: "Sending....")
         
-        let param = FeedbackHelper().getParam(forLoopKey: loopToDoKey, text: text,cardTitle: feedbackCardTitle, userInfo: userInfo, appInfo: appInfo, deviceInfo: deviceInfo, userName: userName ?? "", userEmail: userEmail ?? "", selectedIndexTag: segmentedControl.titleForSegment(at: segmentedControl.selectedSegmentIndex)!)
-        
-        FeedbackHelper().postFeedback(withParam: param ) { (success) in
+        do {
             
-            guard success else {
-                self.alertHud.showText(msg: "Something went wrong!", detailMsg: "Please ", delay: 1.9)
-                return
+            try dsFeedbackApiService.postFeedback(appType: appType) { (success) in
+                
+                guard success else {
+                    self.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
+                    return
+                }
+                
+                self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+                    
+                    guard let `self` = self else {return}
+                    self.feedbackTextView.resignFirstResponder()
+                    self.dismissFeedbackvc()
+                })
             }
             
-            self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-                self.feedbackTextView.resignFirstResponder()
-                dismissFeedbackvc()
-            })
-        }
-        
-        func dismissFeedbackvc() {
-            self.dismiss(animated: true, completion: nil)
+        } catch let error {
+            print("ERROR: \(error)")
+            self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
         }
     }
-}
-
-public extension UIColor {
-
+    
+    func dismissFeedbackvc() {
+        self.dismiss(animated: true, completion: nil)
+    }
+ }
+ 
+ public extension UIColor {
+    
     public convenience init(rawRGBValue red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-
+        
         self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
     }
-}
+ }
