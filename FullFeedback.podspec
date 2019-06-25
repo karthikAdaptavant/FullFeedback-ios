@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 
 
 
-  s.platform = :ios, '10.0'
+  s.platform = :ios, '9.0'
   s.requires_arc = true
 
   s.source_files = 'FullFeedback/Classes/**/*.{swift}'
@@ -24,5 +24,6 @@ Pod::Spec.new do |s|
 
   s.dependency 'Alamofire', '~> 4.7'
   s.dependency 'MBProgressHUD', '1.0.0'
+  s.dependency 'SwiftyJSON'
 
 end
