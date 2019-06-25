@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FullFeedback'
-  s.version          = '0.1.8'
+  s.version          = '0.1.9'
   s.swift_version    = '4.2'
   s.summary          = 'Full feedback is a framework which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
