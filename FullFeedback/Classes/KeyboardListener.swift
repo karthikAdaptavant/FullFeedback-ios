@@ -33,10 +33,10 @@ class KeyboardListener: NSObject {
         
         let notificationCenter = NotificationCenter.default
         
-        notificationCenter.addObserver(listener, selector: #selector(keyboard_WillShow(_:)), name: Notification.Name.UIKeyboardWillShow, object: nil)
-        notificationCenter.addObserver(listener, selector: #selector(keyboard_WillHide(_:)), name: Notification.Name.UIKeyboardWillHide, object: nil)
-        notificationCenter.addObserver(listener, selector: #selector(keyboard_DidHide(_:)), name: Notification.Name.UIKeyboardDidHide, object: nil)
-        notificationCenter.addObserver(listener, selector: #selector(keyboard_DidShow(_:)), name: Notification.Name.UIKeyboardDidShow, object: nil)
+        notificationCenter.addObserver(listener, selector: #selector(keyboard_WillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        notificationCenter.addObserver(listener, selector: #selector(keyboard_WillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        notificationCenter.addObserver(listener, selector: #selector(keyboard_DidHide(_:)), name: UIResponder.keyboardDidHideNotification, object: nil)
+        notificationCenter.addObserver(listener, selector: #selector(keyboard_DidShow(_:)), name: UIResponder.keyboardDidShowNotification, object: nil)
         
         return listener
     }
@@ -46,7 +46,7 @@ class KeyboardListener: NSObject {
     @objc func keyboard_WillShow(_ notification: Notification) {
         
         let userInfo = notification.userInfo!
-        let kbSize: CGSize = (userInfo[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size
+        let kbSize: CGSize = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue.size
         keyboardHt = kbSize.height
         
         isKeyboardVisible = true
