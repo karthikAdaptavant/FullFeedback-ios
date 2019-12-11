@@ -8,35 +8,40 @@
 import Foundation
 
 // MARK: ModeType
-enum DSTaskModeType: Int {
-    case live
-    case staging
+public enum TaskEnvironmentType: Int {
+    case live, staging
 }
 
-private let dsTaskMode: DSTaskModeType = .live
-
-let Constants = ConstantsStruct(mode: dsTaskMode)
-
 // MARK: Constants
-struct ConstantsStruct {
-    
-    let urlStr: String
-    let apiKey: String
-    let awUrlStr: String
-    
-    init(mode: DSTaskModeType) {
-        
-        switch mode {
-        case .live:
-            urlStr = "https://my.distributedsource.com"
-            awUrlStr = "https://api.anywhereworks.com"
-            apiKey = "SEN42"
-        case .staging:
-            urlStr = "https://mystaging.distributedsource.com"
-            awUrlStr = "https://api.staging.anywhereworks.com"
-            apiKey = "SEN42"
-        }
-    }
+public struct TaskApiConstants {
+	
+	let dsTaskBaseUrl: String
+	let awTaskBaseUrl: String
+	var apiKey: String! // Main application should set this
+	
+	public init(mode: TaskEnvironmentType) {
+		switch mode {
+			case .live:
+				dsTaskBaseUrl = "https://my.distributedsource.com"
+				awTaskBaseUrl = "https://api.anywhereworks.com"
+			
+			case .staging:
+				dsTaskBaseUrl = "https://mystaging.distributedsource.com"
+				awTaskBaseUrl = "https://api.staging.anywhereworks.com"
+		}
+	}
+	
+	public mutating func add(apiKey: String) {
+		self.apiKey = apiKey
+	}
+	
+	func getAwTaskUrl() -> String {
+		return awTaskBaseUrl + "/api/v1/task"
+	}
+	
+	func getDsTaskUrl() -> String {
+		return dsTaskBaseUrl + "/createTask"
+	}
 }
 
 // MARK: ERROR
@@ -44,17 +49,7 @@ public enum DSTaskError: Error {
     
     case invalidURL(String)
     case invalidParam(String)
-    
-//    case invalidDepartment
-//    case invalidDepartmentId
-//    case invalidBrandId
-//
-//    case invalidType
-//    case invalidSource
-//
-//    case invalidAccessToken
-//    case invalidEmailId
-    
+        
     public var description: String {
         
         switch self {
@@ -89,9 +84,45 @@ public enum AppType {
 
 
 // MARK: Extension For .utf8 conversion
-extension String {
-    
+extension String {    
     func toData() -> Data {
         return self.data(using: String.Encoding.utf8)!
     }
+}
+
+public struct FullTaskLogger {
+	public static var CanLog: Bool = false
+}
+
+struct FullTaskUtils {
+	
+	static func getBundle() -> Bundle {
+		let podBundle = Bundle(for: FeedbackViewController.self)
+		guard let bundleUrl = podBundle.url(forResource: "FullFeedback", withExtension: "bundle") else { fatalError("FullFeedback bundle url not found") }
+		guard let bundle = Bundle(url: bundleUrl) else { fatalError("FullFeedback bundle not found") }
+		return bundle
+	}
+	
+	static func getFullTaskViewController() -> FeedbackViewController? {
+		let bundle = FullTaskUtils.getBundle()
+		let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
+		return storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController
+	}
+}
+
+let fullTaskLogTag = "[FullTask]:"
+
+func fullTaskLogMessage(_ string: String) {
+	guard FullTaskLogger.CanLog else { return }
+	print("💙💙 \(fullTaskLogTag) \(string)")
+}
+
+func fullTaskLogError(_ error: Error) {
+	guard FullTaskLogger.CanLog else { return }
+	print("♥️♥️ \(fullTaskLogTag) \(error.localizedDescription)")
+}
+
+func fullTaskLogError(_ error: String) {
+	guard FullTaskLogger.CanLog else { return }
+	print("♥️♥️ \(fullTaskLogTag) \(error)")
 }

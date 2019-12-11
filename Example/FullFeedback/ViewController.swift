@@ -23,17 +23,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func feedbackBtnAct(_ sender: Any) {
-        
-        let accessToken = ""  
-        let feedBackSign = "<br><br>----------<b>App Data</b>-----------<br> <br>------------<b>User Info</b>----------<br> <b>LoginId</b> - sathish.gurunathan@anywhere.co<br> <b>UserName</b> - sathish<br> <b>UniquePin</b> - Test<br> <b>TimeZone</b> - In/kolkata - 05:30<br> <br>------------<b>App Info</b>----------<br> <b>AppVersion</b> - v1.0(1.3)<br> <b>AppEnvironment</b> - TestLive<br> <b>Brand ID</b> - TestBrandID<br> <br>------------<b>Device Info</b>----------<br> <b>Model</b> - iPhone<br> <b>DeviceType</b> - Test<br> <b>Version</b> - iOS 11.1.1<br> <b>DeviceName</b> - iPhone<br> <b>Device ID</b> - TestID<br>"
-        
-        let dsAwParmaHelper = DSParamHelper(department: "you dept", departmentId: "your dept id", type: "pass your type here", source: "pass your source here", accessToken: "", emailId: "", brandId: "")        
-        guard let feedbackVc = FeedbackViewController.initialize(dsParamHelper: dsAwParmaHelper, appType: .awFeedback, feedbackInfo: feedBackSign) else {
-            return
-        }
-        
+	  
+		FullTaskLogger.CanLog = true
+        let param = TaskParam(department: "you dept", departmentId: "your dept id", type: "pass your type here", source: "pass your source here", accessToken: "", emailId: "", brandId: "")
+		var apiConstants: TaskApiConstants = TaskApiConstants(mode: .live)
+		apiConstants.add(apiKey: "your api key")
+				 
+		guard let feedbackVc = FeedbackViewController.initialize(param: param, taskType: .awTask, apiConstants: apiConstants) else { return }
         feedbackVc.statusBarStyle = .lightContent        
         self.present(feedbackVc, animated: true, completion: nil)
-    }
-    
+    }    
 }
