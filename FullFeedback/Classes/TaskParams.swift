@@ -8,6 +8,11 @@
 import Foundation
 import Alamofire
 
+public enum TaskType {
+	case dsTask
+	case awTask
+}
+
 // MARK: Pod Consumer should give the params
 public struct TaskParam {
     
