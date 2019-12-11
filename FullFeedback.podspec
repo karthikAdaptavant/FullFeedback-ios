@@ -11,14 +11,14 @@ Pod::Spec.new do |s|
 
   s.source           = { :git => 'https://github.com/karthikAdaptavant/FullFeedback-ios.git', :tag => s.version.to_s }
 
-  s.platform = :ios, '9.0'
+  s.platform = :ios, '10.0'
   s.requires_arc = true
   s.source_files = 'FullFeedback/Classes/**/*.{swift}'
   s.resource_bundles = {
   'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard,png}']
   }
 
-  s.dependency 'Alamofire', '~> 4.7'
+  s.dependency 'Alamofire', '5.0.0-rc.3'
   s.dependency 'MBProgressHUD', '1.0.0'
   s.dependency 'SwiftyJSON'
 

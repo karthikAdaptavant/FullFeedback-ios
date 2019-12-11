@@ -1,11 +1,11 @@
 PODS:
-  - Alamofire (4.7.0)
-  - FullFeedback (0.1.10):
-    - Alamofire (~> 4.7)
+  - Alamofire (5.0.0-rc.3)
+  - FullFeedback (0.2.1):
+    - Alamofire (= 5.0.0-rc.3)
     - MBProgressHUD (= 1.0.0)
     - SwiftyJSON
   - MBProgressHUD (1.0.0)
-  - SwiftyJSON (4.2.0)
+  - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
   - FullFeedback (from `../`)
@@ -21,10 +21,10 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
-  FullFeedback: 7471ffd2bf907d9e9777c6cd11d83209a29fc27a
+  Alamofire: ca8c0de6906873be89d6deec5c8de279e00bf872
+  FullFeedback: cf9be98967aa2a962c7a5b1051a3ef16abc3a4bb
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
-  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
+  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
 PODFILE CHECKSUM: f4c3c4480c35c7d7401342e46b5a99e071fcd68f
 

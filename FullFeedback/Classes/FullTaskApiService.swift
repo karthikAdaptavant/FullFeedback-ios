@@ -78,8 +78,7 @@ struct TaskApi {
     
     // MARK: Network Request
 	static func makeDSTaskRequest(_ request: URLRequest, _ completion: TaskCompletion?) {
-        
-        Alamofire.request(request).responseData { (response) in
+        AF.request(request).responseData { (response) in
             switch response.result {
             case .success(_):
                 completion?(true)
@@ -91,48 +90,38 @@ struct TaskApi {
 }
 
 // MARK: AW Task Handler
+// NEED TO CONFIRM THIS
 extension TaskApi {
     
 	static func makeAWTaskRequest(_ feedback: String, _ dsParams: TaskParam, _ completion: TaskCompletion?) {
         		 
 		let urlStr: String = FullTaskService.shared.apiConstants.getAwTaskUrl()
-	        
-        Alamofire.upload(multipartFormData: { formdata in
-            
-            formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
-            formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.value)
-            formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.value)
-            formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.value)
-            
-            if let brandId = dsParams.brandId {
-                formdata.append(dsParams.brandId!.toData(), withName: AWFeedbackParamsKey.brandId.value)
-            }
-            
-            formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
-            
-        }, usingThreshold: UInt64.init(), to: urlStr, method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"], encodingCompletion: { (encodingResult) in
-            
-            switch encodingResult {
+		
+		let uploader = AF.upload(multipartFormData: { (formdata) in
+			
+			formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
+			formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.value)
+			formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.value)
+			formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.value)
+			
+			if let brandId = dsParams.brandId {
+				formdata.append(dsParams.brandId!.toData(), withName: AWFeedbackParamsKey.brandId.value)
+			}
+			
+			formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
+			
+		}, to: urlStr, usingThreshold:  UInt64.init(), method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"])
+		
+		
+		uploader.responseJSON { (response) in
+			//fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
+			switch response.result {
+				case .failure(let err):
+					completion?(false)
 				
-			case .failure(let encodingError):
-				completion?(false)
-                
-            case .success(let upload, _, _):
-                
-                upload.responseJSON(completionHandler: { (response) in
-					fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
-                    
-                    if let resp = response.response, (resp.statusCode == 401) {
-                        completion?(false)
-                        return
-                    }
-                    guard response.result.isSuccess else {
-                        completion?(false)
-                        return
-                    }
-                    completion?(true)
-                })
-            }
-        })
+				case .success(_):
+					completion?(true)
+			}
+		}
     }
  }
