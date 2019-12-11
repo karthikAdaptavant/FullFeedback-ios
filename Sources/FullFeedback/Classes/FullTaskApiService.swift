@@ -64,11 +64,11 @@ struct TaskApi {
             params.updateValue(uploadDocuments, forKey: "uploadedDocuments")
         }
         
-		guard let url = URL(string: apiConstants.dsTaskBaseUrl) else {
+		guard let url = URL(string: apiConstants.getDsTaskUrl()) else {
             throw DSTaskError.invalidURL("Failed In URL Conversion")
         }
         
-        var urlRequest = URLRequest(url: url.appendingPathComponent("/createTask"))
+        var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
         urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
@@ -94,10 +94,9 @@ struct TaskApi {
 extension TaskApi {
     
 	static func makeAWTaskRequest(_ feedback: String, _ dsParams: TaskParam, _ completion: TaskCompletion?) {
-        
-		 
-		let urlStr: String = FullTaskService.shared.apiConstants.awTaskBaseUrl + "/api/v1/task"
-        
+        		 
+		let urlStr: String = FullTaskService.shared.apiConstants.getAwTaskUrl()
+	        
         Alamofire.upload(multipartFormData: { formdata in
             
             formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
@@ -114,28 +113,25 @@ extension TaskApi {
         }, usingThreshold: UInt64.init(), to: urlStr, method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"], encodingCompletion: { (encodingResult) in
             
             switch encodingResult {
+				
+			case .failure(let encodingError):
+				completion?(false)
                 
             case .success(let upload, _, _):
                 
                 upload.responseJSON(completionHandler: { (response) in
-				  
 					fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
                     
                     if let resp = response.response, (resp.statusCode == 401) {
                         completion?(false)
                         return
                     }
-                    
                     guard response.result.isSuccess else {
                         completion?(false)
                         return
                     }
-					
                     completion?(true)
                 })
-                
-            case .failure(let encodingError):
-                completion?(false)
             }
         })
     }

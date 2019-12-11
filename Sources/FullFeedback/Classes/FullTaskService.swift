@@ -19,7 +19,9 @@ class FullTaskService {
 	var apiConstants: TaskApiConstants!
 	var taskType: TaskType!
 	
-	private init() { }
+	private init() {
+		fullTaskLogMessage("Initiaiting FullFeedback Service: Internal Shared State")
+	}
 	
 	func assign(param: TaskParam) {
 		self.taskParam = param

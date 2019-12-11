@@ -23,10 +23,7 @@
     @IBOutlet weak var feedbackTextBottomconstraint: NSLayoutConstraint!
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
-    
-    var taskParam: TaskParam!
-    var taskType: TaskType = .dsTask
-    
+        
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
     open var deviceInfo: [String: Any] = [:]
@@ -159,10 +156,7 @@
     
 	open class func initialize(param: TaskParam, taskType: TaskType, apiConstants: TaskApiConstants) -> FeedbackViewController? {
         
-        let bundle = FullTaskUtils.getBundle()
-        let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
-        
-        guard let feedbackVc = storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController else {
+		guard let feedbackVc = FullTaskUtils.getFullTaskViewController() else {
 			fullTaskLogError("Feedback viewcontroller not found")
             return nil
         }
@@ -171,7 +165,6 @@
 		fullTaskService.assign(param: param)
 		fullTaskService.assign(taskType: taskType)
 		fullTaskService.assign(apiConstants: apiConstants)
-  
         return feedbackVc
     }
     

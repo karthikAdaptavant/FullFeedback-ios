@@ -9,11 +9,8 @@ import Foundation
 
 // MARK: ModeType
 public enum TaskEnvironmentType: Int {
-    case live
-    case staging
+    case live, staging
 }
-
-//var FullApiConstants: TaskApiConstants = TaskApiConstants(mode: .live) //Must be
 
 // MARK: Constants
 public struct TaskApiConstants {
@@ -36,6 +33,14 @@ public struct TaskApiConstants {
 	
 	public mutating func add(apiKey: String) {
 		self.apiKey = apiKey
+	}
+	
+	func getAwTaskUrl() -> String {
+		return awTaskBaseUrl + "/api/v1/task"
+	}
+	
+	func getDsTaskUrl() -> String {
+		return dsTaskBaseUrl + "/createTask"
 	}
 }
 
@@ -86,31 +91,38 @@ extension String {
 }
 
 public struct FullTaskLogger {
-	public static let canLog: Bool = false
+	public static var CanLog: Bool = false
 }
 
 struct FullTaskUtils {
+	
 	static func getBundle() -> Bundle {
 		let podBundle = Bundle(for: FeedbackViewController.self)
 		guard let bundleUrl = podBundle.url(forResource: "FullFeedback", withExtension: "bundle") else { fatalError("FullFeedback bundle url not found") }
 		guard let bundle = Bundle(url: bundleUrl) else { fatalError("FullFeedback bundle not found") }
 		return bundle
 	}
+	
+	static func getFullTaskViewController() -> FeedbackViewController? {
+		let bundle = FullTaskUtils.getBundle()
+		let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
+		return storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController
+	}
 }
 
 let fullTaskLogTag = "[FullTask]:"
 
 func fullTaskLogMessage(_ string: String) {
-	guard FullTaskLogger.canLog else { return }
+	guard FullTaskLogger.CanLog else { return }
 	print("💙💙 \(fullTaskLogTag) \(string)")
 }
 
 func fullTaskLogError(_ error: Error) {
-	guard FullTaskLogger.canLog else { return }
+	guard FullTaskLogger.CanLog else { return }
 	print("♥️♥️ \(fullTaskLogTag) \(error.localizedDescription)")
 }
 
 func fullTaskLogError(_ error: String) {
-	guard FullTaskLogger.canLog else { return }
+	guard FullTaskLogger.CanLog else { return }
 	print("♥️♥️ \(fullTaskLogTag) \(error)")
 }
