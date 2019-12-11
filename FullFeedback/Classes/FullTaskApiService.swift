@@ -111,15 +111,15 @@ extension TaskApi {
 			formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
 			
 		}, to: urlStr, usingThreshold:  UInt64.init(), method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"])
-		
-		
+				
 		uploader.responseJSON { (response) in
-			//fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
 			switch response.result {
 				case .failure(let err):
+					fullTaskLogError(err)
 					completion?(false)
 				
-				case .success(_):
+				case .success(let value):
+					fullTaskLogMessage("Task Response: \(JSON(value))")
 					completion?(true)
 			}
 		}
