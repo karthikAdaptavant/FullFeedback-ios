@@ -156,10 +156,7 @@
     
 	open class func initialize(param: TaskParam, taskType: TaskType, apiConstants: TaskApiConstants) -> FeedbackViewController? {
         
-        let bundle = FullTaskUtils.getBundle()
-        let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
-        
-        guard let feedbackVc = storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController else {
+		guard let feedbackVc = FullTaskUtils.getFullTaskViewController() else {
 			fullTaskLogError("Feedback viewcontroller not found")
             return nil
         }
