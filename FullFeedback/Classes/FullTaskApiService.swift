@@ -39,7 +39,10 @@ struct TaskApi {
         
 		let apiConstants: TaskApiConstants = FullTaskService.shared.apiConstants
 		
-		let queryParams: [String: Any] = ["apikey": apiConstants.apiKey]
+        guard let apiKey = apiConstants.apiKey else {
+            throw DSTaskError.invalidParam("ApiKey Not Found")
+        }
+        let queryParams: [String: Any] = ["apikey": apiKey]
         
         var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId,
 									 "department": dsParams.dsParamHelper.department,
