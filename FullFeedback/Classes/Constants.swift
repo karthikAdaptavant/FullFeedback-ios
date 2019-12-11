@@ -37,6 +37,14 @@ public struct TaskApiConstants {
 	public mutating func add(apiKey: String) {
 		self.apiKey = apiKey
 	}
+	
+	func getAwTaskUrl() -> String {
+		return awTaskBaseUrl + "/api/v1/task"
+	}
+	
+	func getDsTaskUrl() -> String {
+		return dsTaskBaseUrl + "/createTask"
+	}
 }
 
 // MARK: ERROR

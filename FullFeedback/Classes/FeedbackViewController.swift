@@ -23,10 +23,7 @@
     @IBOutlet weak var feedbackTextBottomconstraint: NSLayoutConstraint!
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
-    
-    var taskParam: TaskParam!
-    var taskType: TaskType = .dsTask
-    
+        
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
     open var deviceInfo: [String: Any] = [:]
@@ -171,7 +168,6 @@
 		fullTaskService.assign(param: param)
 		fullTaskService.assign(taskType: taskType)
 		fullTaskService.assign(apiConstants: apiConstants)
-  
         return feedbackVc
     }
     
