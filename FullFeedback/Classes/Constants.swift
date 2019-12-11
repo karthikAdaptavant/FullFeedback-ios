@@ -17,7 +17,7 @@ public struct TaskApiConstants {
 	
 	let dsTaskBaseUrl: String
 	let awTaskBaseUrl: String
-	var apiKey: String! // Main application should set this
+	var apiKey: String? // Main application should set this
 	
 	public init(mode: TaskEnvironmentType) {
 		switch mode {
