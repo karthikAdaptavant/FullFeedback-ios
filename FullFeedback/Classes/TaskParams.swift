@@ -13,6 +13,11 @@ public enum TaskType {
 	case awTask
 }
 
+public struct TaskContent {
+	let feedbackContent: String
+	var feedbackSignature: String? = nil
+}
+
 // MARK: Pod Consumer should give the params
 public struct TaskParam {
     
@@ -71,10 +76,3 @@ public struct TaskParam {
         self.setmoreAccountId = setmoreAccountId
     }
 }
-
-public struct TaskContent {
-	
-	let feedbackContent: String
-	var feedbackSignature: String? = nil
-}
-
