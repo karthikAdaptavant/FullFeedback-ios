@@ -8,55 +8,25 @@
 import Foundation
 
 // MARK: ModeType
-enum DSTaskModeType: Int {
-    case live
-    case staging
+public enum TaskEnvironmentType: Int {
+    case live, staging
 }
 
-private let dsTaskMode: DSTaskModeType = .live
-
-let Constants = ConstantsStruct(mode: dsTaskMode)
-
-// MARK: Constants
-struct ConstantsStruct {
-    
-    let urlStr: String
-    let apiKey: String
-    let awUrlStr: String
-    
-    init(mode: DSTaskModeType) {
-        
-        switch mode {
-        case .live:
-            urlStr = "https://my.distributedsource.com"
-            awUrlStr = "https://api.anywhereworks.com"
-            apiKey = "SEN42"
-        case .staging:
-            urlStr = "https://mystaging.distributedsource.com"
-            awUrlStr = "https://api.staging.anywhereworks.com"
-            apiKey = "SEN42"
-        }
-    }
+// MARK: Choose App Type
+public enum TaskType {
+	case dsTask // Used by setmore, yocoaboard, teleport
+	case awTask // Used by aw
 }
 
+var FullApiConstants: TaskApiConstants = TaskApiConstants(mode: .live) //Must be overridden by the main apii
+	
 // MARK: ERROR
 public enum DSTaskError: Error {
     
     case invalidURL(String)
     case invalidParam(String)
-    
-//    case invalidDepartment
-//    case invalidDepartmentId
-//    case invalidBrandId
-//
-//    case invalidType
-//    case invalidSource
-//
-//    case invalidAccessToken
-//    case invalidEmailId
-    
-    public var description: String {
         
+    public var description: String {
         switch self {
         case .invalidURL(let error):
             return error.description
@@ -66,6 +36,30 @@ public enum DSTaskError: Error {
             return self.localizedDescription
         }
     }
+}
+
+// MARK: Constants
+public struct TaskApiConstants {
+	
+	let dsTaskBaseUrl: String
+	let awTaskBaseUrl: String
+	var apiKey: String! // Main application should set this
+	
+	init(mode: TaskEnvironmentType) {
+		switch mode {
+			case .live:
+				dsTaskBaseUrl = "https://my.distributedsource.com"
+				awTaskBaseUrl = "https://api.anywhereworks.com"
+			
+			case .staging:
+				dsTaskBaseUrl = "https://mystaging.distributedsource.com"
+				awTaskBaseUrl = "https://api.staging.anywhereworks.com"
+		}
+	}
+	
+	public mutating func add(apiKey: String) {
+		self.apiKey = apiKey
+	}
 }
 
 // MARK: ErrorValidator Type
@@ -80,18 +74,40 @@ enum ErrorValidatorType: String {
     case emailId = "EmailID"
 }
 
-// MARK: Choose App Type
-public enum AppType {
-    
-    case dsTask
-    case awFeedback
-}
-
-
 // MARK: Extension For .utf8 conversion
 extension String {
     
     func toData() -> Data {
         return self.data(using: String.Encoding.utf8)!
     }
+}
+
+public struct FullTaskLogger {
+	public static let canLog: Bool = false
+}
+
+struct FullTaskUtils {
+	static func getBundle() -> Bundle {
+		let podBundle = Bundle(for: FeedbackViewController.self)
+		guard let bundleUrl = podBundle.url(forResource: "FullFeedback", withExtension: "bundle") else { fatalError("FullFeedback bundle url not found") }
+		guard let bundle = Bundle(url: bundleUrl) else { fatalError("FullFeedback bundle not found") }
+		return bundle
+	}
+}
+
+let fullTaskLogTag = "[FullTask]:"
+
+func fullTaskLogMessage(_ string: String) {
+	guard FullTaskLogger.canLog else { return }
+	print("💙💙 \(fullTaskLogTag) \(string)")
+}
+
+func fullTaskLogError(_ error: Error) {
+	guard FullTaskLogger.canLog else { return }
+	print("♥️♥️ \(fullTaskLogTag) \(error.localizedDescription)")
+}
+
+func fullTaskLogError(_ error: String) {
+	guard FullTaskLogger.canLog else { return }
+	print("♥️♥️ \(fullTaskLogTag) \(error)")
 }

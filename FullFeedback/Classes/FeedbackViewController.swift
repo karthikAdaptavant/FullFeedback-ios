@@ -8,24 +8,6 @@
  import UIKit
  import MBProgressHUD
  
- class FeedbackService {
-    
-    static func getBundle() -> Bundle {
-        
-        let podBundle = Bundle(for: FeedbackViewController.self)
-        
-        guard let bundleUrl = podBundle.url(forResource: "FullFeedback", withExtension: "bundle") else {
-            fatalError()
-        }
-        
-        guard let bundle = Bundle(url: bundleUrl) else {
-            fatalError()
-        }
-        
-        return bundle
-    }    
- }
- 
  open class FeedbackViewController: UIViewController, UITextViewDelegate, KeyboardListenerDelegate {
     
     @IBOutlet weak var titleText: UILabel!
@@ -42,9 +24,8 @@
     @IBOutlet weak var feedbackLabel: UILabel!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     
-    var dsParamHelper: DSParamHelper?
-    var appType: AppType = .dsTask
-    var feedbackInfo: String = ""
+    var taskParam: TaskParam!
+    var taskType: TaskType = .dsTask
     
     open var userInfo: [String: Any] = [:]
     open var appInfo: [String: Any] = [:]
@@ -176,27 +157,21 @@
         feedbackTextBottomconstraint.constant = 0
     }
     
-    func keyboard_DidShow(_ notification: Notification) {
-        print("Keyboard did show is called")
-    }
-    
-    func keyboard_DidHide(_ notification: Notification) {
-        print("Keyboard did hide is called")
-    }
-    
-    open class func initialize(dsParamHelper: DSParamHelper, appType: AppType, feedbackInfo: String) -> FeedbackViewController? {
+	open class func initialize(param: TaskParam, taskType: TaskType, apiConstants: TaskApiConstants) -> FeedbackViewController? {
         
-        let bundle = FeedbackService.getBundle()
+        let bundle = FullTaskUtils.getBundle()
         let storyboard = UIStoryboard(name: "Feedback", bundle: bundle)
         
         guard let feedbackVc = storyboard.instantiateViewController(withIdentifier: "FeedbackViewController") as? FeedbackViewController else {
-            print("Error: Feedback viewcontroller not found")
+			fullTaskLogError("Feedback viewcontroller not found")
             return nil
         }
-        
-        feedbackVc.dsParamHelper = dsParamHelper
-        feedbackVc.appType = appType
-        feedbackVc.feedbackInfo = feedbackInfo
+	   		
+		let fullTaskService = FullTaskService.shared
+		fullTaskService.assign(param: param)
+		fullTaskService.assign(taskType: taskType)
+		fullTaskService.assign(apiConstants: apiConstants)
+  
         return feedbackVc
     }
     
@@ -216,50 +191,42 @@
         self.postFeedback(forText: text)
     }
     
-    func postFeedback(forText text: String) {
-        
-        guard let dsParam = dsParamHelper else {
-            return
-        }
-        
-        let dsFeedbackApiService = DSFeedbackApiService(dsParam, text, feedbackInfo)
-        
-        self.alertHud.showLoader(msg: "Sending....")
-        
-        do {
-            
-            try dsFeedbackApiService.postFeedback(appType: appType) { (success) in
-                
-                guard success else {
-                    self.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
-                    return
-                }
-                
-                self.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
-                    
-                    guard let `self` = self else {return}
-                    self.feedbackTextView.resignFirstResponder()
-                    self.dismissFeedbackvc()
-                })
-            }
-            
-        } catch let error {
-            print("ERROR: \(error)")
-            self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
-        }
-    }
-    
     func dismissFeedbackvc() {
         self.dismiss(animated: true, completion: nil)
     }
+	
+	deinit {
+		fullTaskLogMessage("Deinited")
+	}
  }
- 
- public extension UIColor {
-    
-    public convenience init(rawRGBValue red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
-        
-        self.init(red: red / 255.0, green: green / 255.0, blue: blue / 255.0, alpha: alpha)
-    }
- }
+
+// MARK: Feedback Posting
+extension FeedbackViewController {
+	
+	func postFeedback(forText text: String) {
+		
+		self.alertHud.showLoader(msg: "Sending....")
+		let fullTaskService = FullTaskService.shared
+		let content = TaskContent(feedbackContent: text, feedbackSignature: fullTaskService.taskParam.taskSignature)
+		fullTaskService.assign(content: content)
+		
+		do {
+			try fullTaskService.postFeedback { [weak self] (success) in
+				switch success {
+					case false:
+						self?.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
+					
+					case true:
+						self?.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
+						DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+							self?.feedbackTextView.resignFirstResponder()
+							self?.dismissFeedbackvc()
+					})
+				}
+			}
+		} catch let error {
+			fullTaskLogError(error)
+			self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
+		}
+	}
+}

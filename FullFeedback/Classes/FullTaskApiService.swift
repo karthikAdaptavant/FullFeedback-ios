@@ -11,7 +11,7 @@ import SwiftyJSON
 
 struct DSFeedbackParams {
     
-    let dsParamHelper: DSParamHelper
+    let dsParamHelper: TaskParam
     let historyComments: [[String: Any]]
     
     var documents: [String: Any]?
@@ -32,14 +32,19 @@ enum AWFeedbackParamsKey: String {
     }
 }
 
-class DSTaskApiHandler {
+struct TaskApi {
     
     // Task Construction
-    internal func constructDSTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
+	static func constructDSTaskRequest(_ dsParams: DSFeedbackParams) throws -> URLRequest {
         
-        let queryParams: [String: Any] = ["apikey": Constants.apiKey]
+		let apiConstants: TaskApiConstants = FullTaskService.shared.apiConstants
+		
+		let queryParams: [String: Any] = ["apikey": apiConstants.apiKey]
         
-        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId, "department": dsParams.dsParamHelper.department, "type": dsParams.dsParamHelper.type, "comments": dsParams.comments]
+        var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId,
+									 "department": dsParams.dsParamHelper.department,
+									 "type": dsParams.dsParamHelper.type,
+									 "comments": dsParams.comments]
         
         params.updateValue(dsParams.historyComments, forKey: "history")
         params.updateValue(dsParams.dsParamHelper.source, forKey: "source")
@@ -56,28 +61,23 @@ class DSTaskApiHandler {
             params.updateValue(uploadDocuments, forKey: "uploadedDocuments")
         }
         
-        guard let url  = URL(string: Constants.urlStr) else {
+		guard let url = URL(string: apiConstants.dsTaskBaseUrl) else {
             throw DSTaskError.invalidURL("Failed In URL Conversion")
         }
         
         var urlRequest = URLRequest(url: url.appendingPathComponent("/createTask"))
-        
         urlRequest.httpMethod = HTTPMethod.post.rawValue
         urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
         urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
-        
         urlRequest.setValue(dsParams.dsParamHelper.accessToken, forHTTPHeaderField: "Authorization")
-        
         return urlRequest
     }
     
     // MARK: Network Request
-    internal func makeDSTaskRequest(_ request: URLRequest, _ completion: DSTaskCompletion?) {
+	static func makeDSTaskRequest(_ request: URLRequest, _ completion: TaskCompletion?) {
         
         Alamofire.request(request).responseData { (response) in
-            
             switch response.result {
-                
             case .success(_):
                 completion?(true)
             case .failure(let error):
@@ -88,11 +88,12 @@ class DSTaskApiHandler {
 }
 
 // MARK: AW Task Handler
-extension DSTaskApiHandler {
+extension TaskApi {
     
-    internal func makeAWTaskRequest(_ feedback: String, _ dsParams: DSParamHelper, _ completion: DSTaskCompletion?) {
+	static func makeAWTaskRequest(_ feedback: String, _ dsParams: TaskParam, _ completion: TaskCompletion?) {
         
-        let urlStr: String = Constants.awUrlStr + "/api/v1/task"
+		 
+		let urlStr: String = FullTaskService.shared.apiConstants.awTaskBaseUrl + "/api/v1/task"
         
         Alamofire.upload(multipartFormData: { formdata in
             
@@ -114,8 +115,8 @@ extension DSTaskApiHandler {
             case .success(let upload, _, _):
                 
                 upload.responseJSON(completionHandler: { (response) in
-                    
-                    print("JSON -> \(JSON(response.result.value))")
+				  
+					fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
                     
                     if let resp = response.response, (resp.statusCode == 401) {
                         completion?(false)
@@ -126,6 +127,7 @@ extension DSTaskApiHandler {
                         completion?(false)
                         return
                     }
+					
                     completion?(true)
                 })
                 

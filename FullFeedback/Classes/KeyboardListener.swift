@@ -19,12 +19,15 @@ protocol KeyboardListenerDelegate: class {
     func keyboard_DidHide(_ notification: Notification)
 }
 
+extension KeyboardListenerDelegate {
+	func keyboard_DidShow(_ notification: Notification) { }
+	func keyboard_DidHide(_ notification: Notification) { }
+}
+
 class KeyboardListener: NSObject {
     
     var keyboardHt: CGFloat = 256
-    
     var isKeyboardVisible: Bool = false
-    
     weak var delegate: KeyboardListenerDelegate?
     
     class func instance() -> KeyboardListener {
