@@ -8,12 +8,12 @@
 import Foundation
 
 // MARK: ModeType
-enum TaskEnvironmentType: Int {
+public enum TaskEnvironmentType: Int {
     case live
     case staging
 }
 
-var FullApiConstants: TaskApiConstants = TaskApiConstants(mode: .live) //Must be
+//var FullApiConstants: TaskApiConstants = TaskApiConstants(mode: .live) //Must be
 
 // MARK: Constants
 public struct TaskApiConstants {
@@ -22,7 +22,7 @@ public struct TaskApiConstants {
 	let awTaskBaseUrl: String
 	var apiKey: String! // Main application should set this
 	
-	init(mode: TaskEnvironmentType) {
+	public init(mode: TaskEnvironmentType) {
 		switch mode {
 			case .live:
 				dsTaskBaseUrl = "https://my.distributedsource.com"

@@ -25,7 +25,7 @@ class ViewController: UIViewController {
     @IBAction func feedbackBtnAct(_ sender: Any) {
 	  
         let param = TaskParam(department: "you dept", departmentId: "your dept id", type: "pass your type here", source: "pass your source here", accessToken: "", emailId: "", brandId: "")
-		var apiConstants: TaskApiConstants = TaskApiConstants()
+		var apiConstants: TaskApiConstants = TaskApiConstants(mode: .live)
 		apiConstants.add(apiKey: "your api key")
 				 
 		guard let feedbackVc = FeedbackViewController.initialize(param: param, taskType: .awTask, apiConstants: apiConstants) else { return }
