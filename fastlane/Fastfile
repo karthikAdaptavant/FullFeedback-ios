@@ -34,7 +34,7 @@ platform :ios do
   end
 
   def release(type)
-    pod_lib_lint
+    pod_lib_lint(allow_warnings: true)
     version = version_bump_podspec(path: "FullFeedback.podspec",
                                    bump_type: type)
     git_add(path: "FullFeedback.podspec")
@@ -42,6 +42,6 @@ platform :ios do
                message: "#{version} release")
     add_git_tag(tag: "#{version}")
     push_to_git_remote
-    pod_push
+    pod_push(allow_warnings: true)
   end
 end
