@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.7.0)
-  - FullFeedback (0.1.10):
+  - FullFeedback (0.2.1):
     - Alamofire (~> 4.7)
     - MBProgressHUD (= 1.0.0)
     - SwiftyJSON
@@ -22,10 +22,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Alamofire: 907e0a98eb68cdb7f9d1f541a563d6ac5dc77b25
-  FullFeedback: 7471ffd2bf907d9e9777c6cd11d83209a29fc27a
+  FullFeedback: d8bd442086d0282f3a25fd6d0a6d4f665e1d4f9f
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
 
 PODFILE CHECKSUM: f4c3c4480c35c7d7401342e46b5a99e071fcd68f
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.9.1

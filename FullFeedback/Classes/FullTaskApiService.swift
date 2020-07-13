@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Alamofire
 import SwiftyJSON
 
 struct DSFeedbackParams {
@@ -42,7 +41,7 @@ struct TaskApi {
         guard let apiKey = apiConstants.apiKey else {
             throw DSTaskError.invalidParam("ApiKey Not Found")
         }
-        let queryParams: [String: Any] = ["apikey": apiKey]
+        let queryParams: [String: String] = ["apikey": apiKey]
         
         var params: [String: Any] = ["departmentID": dsParams.dsParamHelper.departmentId,
 									 "department": dsParams.dsParamHelper.department,
@@ -64,29 +63,42 @@ struct TaskApi {
             params.updateValue(uploadDocuments, forKey: "uploadedDocuments")
         }
         
-		guard let url = URL(string: apiConstants.getDsTaskUrl()) else {
+		guard var urlComponent = URLComponents(string: apiConstants.getDsTaskUrl()) else {
             throw DSTaskError.invalidURL("Failed In URL Conversion")
         }
-        
+
+        var queryItems: [URLQueryItem] = []
+        for (key, value) in queryParams {
+            queryItems.append(URLQueryItem(name: key, value: value))
+        }
+        urlComponent.queryItems = queryItems
+
+        guard let url = urlComponent.url else {
+            throw DSTaskError.invalidURL("Invalid URL")
+        }
         var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = HTTPMethod.post.rawValue
-        urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
-        urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
+        urlRequest.httpMethod = "POST"
+        urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+
+//        urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
+//        urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
         urlRequest.setValue(dsParams.dsParamHelper.accessToken, forHTTPHeaderField: "Authorization")
         return urlRequest
     }
     
     // MARK: Network Request
 	static func makeDSTaskRequest(_ request: URLRequest, _ completion: TaskCompletion?) {
-        
-        Alamofire.request(request).responseData { (response) in
-            switch response.result {
-            case .success(_):
-                completion?(true)
-            case .failure(let error):
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            let hasValidData = (data != nil && error == nil)
+            guard hasValidData,
+                  let response = response as? HTTPURLResponse,
+                  (200...299).contains(response.statusCode) else {
                 completion?(false)
+                return
             }
-        }
+            completion?(true)
+        }.resume()
     }
 }
 
@@ -94,45 +106,62 @@ struct TaskApi {
 extension TaskApi {
     
 	static func makeAWTaskRequest(_ feedback: String, _ dsParams: TaskParam, _ completion: TaskCompletion?) {
-        		 
+
+        func createFormDataBody(formDataParam: [String: Data], boundary: String) -> Data {
+            var body = Data()
+            let boundaryPrefix = "\r\n--\(boundary)\r\n"
+            for(key, value) in formDataParam {
+                body.appendString(boundaryPrefix)
+                body.appendString("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
+                body.append(value)
+            }
+            body.append("\r\n--\(boundary)--\r\n".data(using: String.Encoding.utf8)!)
+            return body
+        }
+
 		let urlStr: String = FullTaskService.shared.apiConstants.getAwTaskUrl()
-	        
-        Alamofire.upload(multipartFormData: { formdata in
-            
-            formdata.append(dsParams.department.toData(), withName: AWFeedbackParamsKey.dept.value)
-            formdata.append(dsParams.departmentId.toData(), withName: AWFeedbackParamsKey.deptId.value)
-            formdata.append(dsParams.type.toData(), withName: AWFeedbackParamsKey.taskType.value)
-            formdata.append(dsParams.source.toData(), withName: AWFeedbackParamsKey.tags.value)
-            
-            if let brandId = dsParams.brandId {
-                formdata.append(dsParams.brandId!.toData(), withName: AWFeedbackParamsKey.brandId.value)
+        guard !urlStr.isEmpty, let url = URL(string: urlStr) else {
+            completion?(false)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        let boundary = "Boundary-\(UUID().uuidString)"
+        request.setValue("multipart/form-data;boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        request.addValue("Bearer \(dsParams.accessToken)", forHTTPHeaderField: "Authorization")
+
+        var formDataParams: [String: Data] = [AWFeedbackParamsKey.dept.value: dsParams.department.toData(),
+                                              AWFeedbackParamsKey.deptId.value: dsParams.departmentId.toData(),
+                                              AWFeedbackParamsKey.taskType.value: dsParams.type.toData(),
+                                              AWFeedbackParamsKey.tags.value: dsParams.source.toData()]
+        if let brandId = dsParams.brandId {
+            formDataParams.updateValue(dsParams.brandId!.toData(), forKey: AWFeedbackParamsKey.brandId.value)
+        }
+        formDataParams.updateValue(feedback.data(using: String.Encoding.utf8)!, forKey: "card_title")
+
+        let body = createFormDataBody(formDataParam: formDataParams, boundary: boundary)
+        request.httpBody = body
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            print("Respones: \(response)")
+            let hasValidData = (data != nil && error == nil)
+            guard hasValidData,
+                let response = response as? HTTPURLResponse,
+                (200...299).contains(response.statusCode) else {
+                    completion?(false)
+                    return
             }
-            
-            formdata.append(feedback.data(using: String.Encoding.utf8)!, withName: "card_title")
-            
-        }, usingThreshold: UInt64.init(), to: urlStr, method: .post, headers: ["Authorization": "Bearer \(dsParams.accessToken)"], encodingCompletion: { (encodingResult) in
-            
-            switch encodingResult {
-				
-			case .failure(let encodingError):
-				completion?(false)
-                
-            case .success(let upload, _, _):
-                
-                upload.responseJSON(completionHandler: { (response) in
-					fullTaskLogMessage("Task Response: \(JSON(response.result.value))")
-                    
-                    if let resp = response.response, (resp.statusCode == 401) {
-                        completion?(false)
-                        return
-                    }
-                    guard response.result.isSuccess else {
-                        completion?(false)
-                        return
-                    }
-                    completion?(true)
-                })
-            }
-        })
+            completion?(true)
+        }.resume()
     }
  }
+
+extension Data {
+    mutating func appendString(_ string: String) {
+        guard let data = string.data(using: String.Encoding.utf8) else {
+            print("Failed to append Data")
+            return
+        }
+        append(data)
+    }
+}
