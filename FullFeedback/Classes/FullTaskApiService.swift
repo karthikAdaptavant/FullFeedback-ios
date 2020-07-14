@@ -78,10 +78,9 @@ struct TaskApi {
         }
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
-        urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+        urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params)
 
-//        urlRequest = try URLEncoding.queryString.encode(urlRequest, with: queryParams)
-//        urlRequest = try JSONEncoding.default.encode(urlRequest, with: params)
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue(dsParams.dsParamHelper.accessToken, forHTTPHeaderField: "Authorization")
         return urlRequest
     }
@@ -143,7 +142,6 @@ extension TaskApi {
         let body = createFormDataBody(formDataParam: formDataParams, boundary: boundary)
         request.httpBody = body
         URLSession.shared.dataTask(with: request) { (data, response, error) in
-            print("Respones: \(response)")
             let hasValidData = (data != nil && error == nil)
             guard hasValidData,
                 let response = response as? HTTPURLResponse,
