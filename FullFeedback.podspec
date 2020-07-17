@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
   'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard,png}']
   }
 
-  s.dependency 'Alamofire', '~> 4.7'
+  #s.dependency 'Alamofire', '~> 4.7'
   s.dependency 'MBProgressHUD', '1.0.0'
   s.dependency 'SwiftyJSON'
 

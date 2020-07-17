@@ -203,21 +203,23 @@ extension FeedbackViewController {
 		let content = TaskContent(feedbackContent: text, feedbackSignature: fullTaskService.taskParam.taskSignature)
 		fullTaskService.assign(content: content)
 		
-		do {
-			try fullTaskService.postFeedback { [weak self] (success) in
-				switch success {
-					case false:
-						self?.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
-					
-					case true:
-						self?.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
-						DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
-							self?.feedbackTextView.resignFirstResponder()
-							self?.dismissFeedbackvc()
-					})
-				}
-			}
-		} catch let error {
+        do {
+            try fullTaskService.postFeedback { [weak self] (success) in
+                DispatchQueue.main.async { [weak self] in
+                    switch success {
+                        case false:
+                            self?.alertHud.showText(msg: "Something went wrong!", detailMsg: "", delay: 1.9)
+
+                        case true:
+                            self?.alertHud.showText(msg: "Feedback sent Successfully ", detailMsg: "", delay: 1.9)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+                                self?.feedbackTextView.resignFirstResponder()
+                                self?.dismissFeedbackvc()
+                            })
+                    }
+                }
+            }
+        } catch let error {
 			fullTaskLogError(error)
 			self.alertHud.showText(msg: "Something went wrong!" , detailMsg: "", delay: 1.9)
 		}

@@ -8,7 +8,6 @@
 
 import UIKit
 import FullFeedback
-import Alamofire
 
 class ViewController: UIViewController {
     
