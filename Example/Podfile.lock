@@ -1,7 +1,7 @@
 PODS:
-  - Alamofire (5.2.2)
+  - Alamofire (5.3.0)
   - FullFeedback (0.2.1):
-    - Alamofire (= 5.2.2)
+    - Alamofire (= 5.3.0)
     - MBProgressHUD (= 1.0.0)
     - SwiftyJSON
   - MBProgressHUD (1.0.0)
@@ -21,8 +21,8 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  Alamofire: 814429acc853c6c54ff123fc3d2ef66803823ce0
-  FullFeedback: c05cc12703d9a00e5506435c2e062c21f48a45b8
+  Alamofire: 2c792affbdc2f18016e08fdbcacd60aebe1ba593
+  FullFeedback: 932cf520b561acea8e219b166cd0c14f696e9181
   MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
   SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
