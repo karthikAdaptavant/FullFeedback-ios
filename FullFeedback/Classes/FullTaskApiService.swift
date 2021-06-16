@@ -81,7 +81,7 @@ struct TaskApi {
         urlRequest.httpBody = try JSONSerialization.data(withJSONObject: params)
 
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        urlRequest.setValue(dsParams.dsParamHelper.accessToken, forHTTPHeaderField: "Authorization")
+        urlRequest.setValue("Bearer \(dsParams.dsParamHelper.accessToken)", forHTTPHeaderField: "Authorization")
         return urlRequest
     }
     

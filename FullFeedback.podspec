@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'FullFeedback'
-  s.version          = '0.2.1'
+  s.version          = '0.2.2'
   s.swift_version    = '4.2'
   s.summary          = 'Full feedback is a framework which bring a customizable feedback view to integrate in your application and to send the feedback using looptodo (smile)'
 
@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
   'FullFeedback' => ['FullFeedback/Classes/**/*.{storyboard,png}']
   }
 
-  #s.dependency 'Alamofire', '~> 4.7'
   s.dependency 'MBProgressHUD', '1.0.0'
   s.dependency 'SwiftyJSON'
 
